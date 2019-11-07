@@ -8,6 +8,11 @@ import com.mongodb.annotations.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MongoDB链接参数
+ *
+ * @author Laotang
+ */
 public class MongodbConnectOptions extends ConnectOptions {
 
     private MongodbConnectOptions() {

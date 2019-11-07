@@ -18,7 +18,7 @@ public @interface Param {
     // 是否允许值为null或空字串符 默认为允许
     boolean isEmpty() default true;
 
-    // 提交参数的名称
+    // 提交参数的名称，即保存到数据库的字段名
     String name() default "";
 
     // 参数默认值，如果没值会

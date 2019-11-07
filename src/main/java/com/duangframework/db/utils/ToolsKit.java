@@ -1,11 +1,18 @@
 package com.duangframework.db.utils;
 
 import com.duangframework.db.annotation.Entity;
+import com.duangframework.db.annotation.Param;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
-public class ToolsKit {
+public final class ToolsKit {
+
+    private ToolsKit() {
+
+    }
+
     /***
      * 判断传入的对象是否为空
      *
@@ -74,10 +81,42 @@ public class ToolsKit {
      * @return  名称
      */
     public static String getEntityName(Class<?> entityClass) {
+        java.util.Objects.requireNonNull(entityClass, "entityClass is null");
         Entity entity = entityClass.getAnnotation(Entity.class);
         if(isNotEmpty(entity) && isNotEmpty(entity.name())) {
             return entity.name();
         }
         return entityClass.getSimpleName();
+    }
+
+    /**
+     * 取字段名称
+     * 如果有设置注解Param name，则优先取注解指定的name值
+     *
+     * @param field 字段属性
+     * @return 字段名
+     */
+    public static String getFieldName(Field field) {
+        java.util.Objects.requireNonNull(field, "field is null");
+        Param param = field.getAnnotation(Param.class);
+        return ToolsKit.isEmpty(param) ? field.getName() :
+                ToolsKit.isEmpty(param.name()) ? field.getName() : param.name();
+    }
+
+    /**
+     * 是否允许值为null
+     * @return 允许返回true
+     */
+    public static boolean isAllowNull() {
+        return false;
+    }
+
+    /**
+     * 保存到数据库的字段是否全部转换为小写
+     *
+     * @return true为转换为小写
+     */
+    public static boolean isFieldToLowerCase() {
+        return false;
     }
 }

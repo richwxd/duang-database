@@ -2,6 +2,7 @@ package com.duangframework.db.mongodb;
 
 import com.duangframework.db.DbClientFatory;
 import com.duangframework.db.core.DbException;
+import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.IDao;
 import com.duangframework.db.utils.ToolsKit;
 import com.mongodb.DB;
@@ -38,12 +39,11 @@ public class MongoDao<T> implements IDao<T> {
         client =  mongoClient.getClient();
         db = client.getDB(mongoClient.getOptions().getDataBase());
         collection = db.getCollection(ToolsKit.getEntityName(entityClass));
-        collectionKey = MongoUtils.convert2DBFields(ToolsKit.getFields(entityClass));
+//        collectionKey = MongoUtils.convert2DBFields(ToolsKit.getFields(entityClass));
     }
-
 
     @Override
     public T save(T entity) throws DbException {
-        return null;
+        return (T) ConverterKit.duang().encode(entity);
     }
 }
