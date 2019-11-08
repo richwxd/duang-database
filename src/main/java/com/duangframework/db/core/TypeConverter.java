@@ -54,14 +54,17 @@ public abstract class TypeConverter implements IDataConverter {
 
     /**
      * 解码
-     * @param object
-     * @param dbObject
-     * @return
+     * @param field entity field字段
+     * @param dbObject Mongodb  DBObject对象
      */
-    public abstract Object decode(Object object, DBObject dbObject) throws DbException;
+    public abstract void decode(Field field, DBObject dbObject) throws DbException;
 
     /**
      *  编码
+     *
+     * @param field entity field对象
+     * @param value entity field value
+     * @return  Converter
      */
     public abstract Converter encode(Field field, Object value) throws DbException;
 }
