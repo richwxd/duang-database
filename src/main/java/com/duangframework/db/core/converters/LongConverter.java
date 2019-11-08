@@ -9,18 +9,19 @@ import java.util.List;
 
 
 /**
- * String类型转换器
+ * Long类型转换器
  *
  * @author Laotang
  */
-public class StringConverter extends TypeConverter {
+public class LongConverter extends TypeConverter {
 
-    public StringConverter() {
-        super(String.class, String[].class);
+    public LongConverter() {
+        super(int.class, Integer.class, Integer[].class);
     }
 
     @Override
-    public void decode (Field field, DBObject dbObject) throws DbException {
+    public Object decode(Object object, DBObject dbObject) throws DbException {
+        return null;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class StringConverter extends TypeConverter {
             return new Converter(field, getName(field), (List)value);
         }
 
-        return new Converter(field, getName(field), String.valueOf(value));
+        return new Converter(field, getName(field), Long.parseLong(String.valueOf(value)));
     }
 
 
