@@ -53,12 +53,28 @@ public abstract class TypeConverter implements IDataConverter {
     }
 
     /**
+     *设置字段值
+     * @param entityObj 实体类对象
+     * @param field 字段属性
+     * @param value 值
+     */
+    protected void setFieldValue(Object entityObj, Field field, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(entityObj, value);
+        } catch (IllegalAccessException iae) {
+            throw new DbException(iae.getMessage());
+        }
+    }
+
+    /**
      * 解码
-     * @param object
+     * @param entityObj
+     * @param field 字符属性
      * @param dbObject
      * @return
      */
-    public abstract Object decode(Object object, DBObject dbObject) throws DbException;
+    public abstract void decode(Object entityObj, Field field, DBObject dbObject) throws DbException;
 
     /**
      *  编码

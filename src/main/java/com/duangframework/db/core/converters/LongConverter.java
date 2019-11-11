@@ -16,7 +16,7 @@ import java.util.List;
 public class LongConverter extends TypeConverter {
 
     public LongConverter() {
-        super(int.class, Integer.class, Integer[].class);
+        super(long.class, Long.class, Long[].class);
     }
 
     @Override
