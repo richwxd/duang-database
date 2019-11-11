@@ -20,8 +20,7 @@ public class StringConverter extends TypeConverter {
     }
 
     @Override
-    public Object decode(Object object, DBObject dbObject) throws DbException {
-        return null;
+    public void decode (Field field, DBObject dbObject) throws DbException {
     }
 
     @Override

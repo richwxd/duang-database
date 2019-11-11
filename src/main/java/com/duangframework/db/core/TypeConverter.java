@@ -74,10 +74,14 @@ public abstract class TypeConverter implements IDataConverter {
      * @param dbObject
      * @return
      */
-    public abstract void decode(Object entityObj, Field field, DBObject dbObject) throws DbException;
+    public abstract Object decode(Object object, DBObject dbObject) throws DbException;
 
     /**
      *  编码
+     *
+     * @param field entity field对象
+     * @param value entity field value
+     * @return  Converter
      */
     public abstract Converter encode(Field field, Object value) throws DbException;
 }

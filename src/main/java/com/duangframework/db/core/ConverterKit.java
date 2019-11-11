@@ -4,8 +4,6 @@ import com.duangframework.db.core.converters.Converter;
 import com.duangframework.db.core.converters.StringConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.ToolsKit;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +16,11 @@ public final class ConverterKit {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConverterKit.class);
     private static final ConverterKit CONVERTER_KIT = new ConverterKit();
-    private final List<TypeConverter> untypedTypeEncoders = new LinkedList<TypeConverter>();
+    /**未知类型(一般是指自定义的类型)转换器Map*/
+    private final List<TypeConverter> untypedTcMap = new LinkedList<TypeConverter>();
+    /** 基础类型转换器Map*/
     private final Map<Class, TypeConverter> tcMap = new ConcurrentHashMap<Class, TypeConverter>();
+
     private final List<Class<? extends TypeConverter>> registeredConverterClasses = new ArrayList<Class<? extends TypeConverter>>();
 
     private static class ConverterKitHolder {
@@ -38,7 +39,7 @@ public final class ConverterKit {
                 addTypedConverter(c, tc);
             }
         } else {
-            untypedTypeEncoders.add(tc);
+            untypedTcMap.add(tc);
         }
         registeredConverterClasses.add(tc.getClass());
 //        tc.setMapper(mapper);
@@ -59,7 +60,7 @@ public final class ConverterKit {
         Document document = new Document();
         for(Field field : fields) {
             TypeConverter typeConverter = getEncoder(field.getType());
-            Converter c = typeConverter.encode(field, entityObject);
+            Converter c = typeConverter.encode(field, ToolsKit.getFieldValue(field, entityObject));
             if(c.isNotNull() && c.isPersist()) {
                 document.put(c.getKey(), c.getValue());
             }
@@ -79,7 +80,7 @@ public final class ConverterKit {
             return typeConverter;
         }
 
-        for (TypeConverter tc : untypedTypeEncoders) {
+        for (TypeConverter tc : untypedTcMap) {
             if (tc.getSupportedTypes().contains(c)) {
                 typeConverter = tc;
             }

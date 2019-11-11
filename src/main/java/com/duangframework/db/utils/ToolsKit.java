@@ -90,7 +90,7 @@ public final class ToolsKit {
     }
 
     /**
-     * 取字段名称
+     * 取成员变量名称
      * 如果有设置注解Param name，则优先取注解指定的name值
      *
      * @param field 字段属性
@@ -101,6 +101,24 @@ public final class ToolsKit {
         Param param = field.getAnnotation(Param.class);
         return ToolsKit.isEmpty(param) ? field.getName() :
                 ToolsKit.isEmpty(param.name()) ? field.getName() : param.name();
+    }
+
+    /**
+     * 取成员变量值
+     *
+     * @param field 类的字段，成员变量
+     * @param entityObj Entity或Dto对象
+     * @return
+     */
+    public static Object getFieldValue(Field field, Object entityObj) {
+        java.util.Objects.requireNonNull(field, "field is null");
+        java.util.Objects.requireNonNull(entityObj, "entityObj is null");
+        try {
+            field.setAccessible(true);
+            return field.get(entityObj);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
