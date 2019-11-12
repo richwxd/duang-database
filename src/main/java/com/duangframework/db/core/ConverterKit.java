@@ -4,6 +4,8 @@ import com.duangframework.db.core.converters.Converter;
 import com.duangframework.db.core.converters.StringConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.ToolsKit;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,20 +54,20 @@ public final class ConverterKit {
         }
     }
 
-    public <T> T encode(Object entityObject) throws DbException{
+    public Map<String,Object> encode(Object entityObject) throws DbException{
         if(ToolsKit.isEmpty(entityObject)) {
             throw new NullPointerException("Entity Convetor Document Fail: " + entityObject.getClass().getCanonicalName() + " is null!");
         }
         Field[] fields = ClassKit.getFields(entityObject.getClass());
-        Document document = new Document();
+        Map<String, Object> encodeMap = new HashMap<>();
         for(Field field : fields) {
             TypeConverter typeConverter = getEncoder(field.getType());
             Converter c = typeConverter.encode(field, ToolsKit.getFieldValue(field, entityObject));
-            if(c.isNotNull() && c.isPersist()) {
-                document.put(c.getKey(), c.getValue());
+            if(null != c && c.isNotNull() && c.isPersist()) {
+                encodeMap.put(c.getKey(), c.getValue());
             }
         }
-        return null;
+        return encodeMap;
     }
 
     /**

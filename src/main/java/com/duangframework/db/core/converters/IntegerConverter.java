@@ -2,6 +2,7 @@ package com.duangframework.db.core.converters;
 
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
+import com.duangframework.db.utils.DataType;
 import com.mongodb.DBObject;
 
 import java.lang.reflect.Field;
@@ -20,8 +21,20 @@ public class IntegerConverter extends TypeConverter {
     }
 
     @Override
-    public Object decode(Object object, DBObject dbObject) throws DbException {
-        return null;
+    public void decode(Object entityObj, Field field, Object valueObj) throws DbException {
+
+        if (null == valueObj) {
+            return ;
+        }
+
+        Class<?> type = field.getType();
+
+        Object toFieldValueObj = null;
+        if (DataType.isInteger(type) || DataType.isIntegerObject(type)) {
+            toFieldValueObj = convertValueObj(field, valueObj);
+        }
+
+        setFieldValue(entityObj, field, Integer.parseInt(String.valueOf(toFieldValueObj)));
     }
 
     @Override

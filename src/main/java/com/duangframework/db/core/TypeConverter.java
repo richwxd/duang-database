@@ -5,11 +5,13 @@ import com.duangframework.db.annotation.Persist;
 import com.duangframework.db.core.converters.Converter;
 import com.duangframework.db.utils.ToolsKit;
 import com.mongodb.DBObject;
+import org.bson.Document;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 类型转换基类
@@ -68,13 +70,34 @@ public abstract class TypeConverter implements IDataConverter {
     }
 
     /**
-     * 解码
-     * @param entityObj
-     * @param field 字符属性
-     * @param dbObject
+     * 转换值对象
+     * @param field 字段属性
+     * @param valueObj 值
      * @return
      */
-    public abstract Object decode(Object object, DBObject dbObject) throws DbException;
+    protected Object convertValueObj(Field field, Object valueObj) {
+        if(ToolsKit.isEmpty(field) || ToolsKit.isEmpty(valueObj)) {
+            throw new DbException("转换值对象时，Field或valueObj不能为空");
+        }
+        if (valueObj instanceof  DBObject) {
+            return ((DBObject)valueObj).get(getName(field));
+        }
+        else if (valueObj instanceof Document) {
+            return ((Document)valueObj).get(getName(field));
+        }
+        else {
+            return valueObj;
+        }
+    }
+
+    /**
+     * 解码
+     * @param entityObj 实体entity对象
+     * @param field 字符属性
+     * @param valueObj 值对象
+     * @return
+     */
+    public abstract void decode(Object entityObj,  Field field, Object valueObj) throws DbException;
 
     /**
      *  编码

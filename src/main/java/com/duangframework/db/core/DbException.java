@@ -10,4 +10,8 @@ public class DbException extends RuntimeException {
         super(message);
     }
 
+    public DbException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
