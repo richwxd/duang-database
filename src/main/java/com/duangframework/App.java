@@ -8,7 +8,7 @@ import com.mongodb.MongoClient;
 public class App {
     public static void main(String[] args) {
         MongodbClient mongodbClient = new MongodbClient(new MongodbConnectOptions.Builder()
-                .dataBase("")
+                .dataBase("openAGV")
                 .host("")
                 .build());
         try {
