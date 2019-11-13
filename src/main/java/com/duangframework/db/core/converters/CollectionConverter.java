@@ -5,18 +5,14 @@ import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.DataType;
-import com.duangframework.db.utils.ObjectKit;
-import com.duangframework.db.utils.ToolsKit;
 import org.bson.Document;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 
 /**
- * List类型转换器
+ * Collection(List/Set) 类型转换器
  *
  *
  * @author Laotang
