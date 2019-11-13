@@ -5,36 +5,35 @@ import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.DataType;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.Date;
 
 
 /**
- * String类型转换器
+ * Double类型转换器
  *
  * @author Laotang
  */
-public class StringConverter extends TypeConverter {
+public class DateConverter extends TypeConverter {
 
-    public StringConverter() {
-        super(String.class, String[].class);
+    public DateConverter() {
+        super(Date.class);
     }
 
     @Override
     public Converter decode(Field field, Object value) throws DbException {
-
-        if (null == value) {
+        if (value == null) {
             return null;
         }
-
+//
 //        Class<?> type = field.getType();
 //
 //        Object toFieldValueObj = null;
-//        if (DataType.isString(type)) {
+//        if (DataType.isDate(type)) {
 //            toFieldValueObj = convertValueObj(field, valueObj);
 //        }
-//
-//        setFieldValue(entityObj, field, String.valueOf(toFieldValueObj));
-        return new Converter(field, getName(field), (String)value);
+//        setFieldValue(entityObj, field, toFieldValueObj);
+
+        return new Converter(field, getName(field), (Date)value);
     }
 
     @Override
@@ -44,11 +43,7 @@ public class StringConverter extends TypeConverter {
             return null;
         }
 
-        if(value instanceof List) {
-            return new Converter(field, getName(field), (List)value);
-        }
-
-        return new Converter(field, getName(field), String.valueOf(value));
+        return new Converter(field, getName(field), value);
     }
 
 

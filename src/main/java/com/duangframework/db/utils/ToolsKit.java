@@ -1,13 +1,20 @@
 package com.duangframework.db.utils;
 
 import com.duangframework.db.annotation.Entity;
+import com.duangframework.db.annotation.Id;
+import com.duangframework.db.annotation.IdType;
 import com.duangframework.db.annotation.Param;
+import com.duangframework.db.entity.IdEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
 public final class ToolsKit {
+
+    private static final Logger logger = LoggerFactory.getLogger(ToolsKit.class);
 
     private ToolsKit() {
 
@@ -98,6 +105,10 @@ public final class ToolsKit {
      */
     public static String getFieldName(Field field) {
         java.util.Objects.requireNonNull(field, "field is null");
+        Id idParam = field.getAnnotation(Id.class);
+        if(null != idParam) {
+            return IdType.OID.equals(idParam.type()) ? IdEntity.ID_FIELD : IdEntity.ENTITY_ID_FIELD;
+        }
         Param param = field.getAnnotation(Param.class);
         return ToolsKit.isEmpty(param) ? field.getName() :
                 ToolsKit.isEmpty(param.name()) ? field.getName() : param.name();
@@ -136,5 +147,35 @@ public final class ToolsKit {
      */
     public static boolean isFieldToLowerCase() {
         return false;
+    }
+
+
+    /**
+     * 验证是否为MongoDB 的ObjectId
+     *
+     * @param str
+     *            待验证字符串
+     * @return  如果是则返回true
+     */
+    public static boolean isValidDuangId(String str) {
+        if (ToolsKit.isEmpty(str)) {
+            return false;
+        }
+        int len = str.length();
+        if (len != 24) {
+            return false;
+        }
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            if ((c < '0') || (c > '9')) {
+                if ((c < 'a') || (c > 'f')) {
+                    if ((c < 'A') || (c > 'F')) {
+                        logger.warn(str + " is not DuangId!!");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

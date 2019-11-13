@@ -1,7 +1,5 @@
 package com.duangframework.db.core;
 
-import com.duangframework.db.annotation.Param;
-import com.duangframework.db.annotation.Persist;
 import com.duangframework.db.core.converters.Converter;
 import com.duangframework.db.utils.ToolsKit;
 import com.mongodb.DBObject;
@@ -11,7 +9,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 类型转换基类
@@ -92,12 +89,11 @@ public abstract class TypeConverter implements IDataConverter {
 
     /**
      * 解码
-     * @param entityObj 实体entity对象
      * @param field 字符属性
      * @param valueObj 值对象
      * @return
      */
-    public abstract void decode(Object entityObj,  Field field, Object valueObj) throws DbException;
+    public abstract Converter decode(Field field, Object valueObj) throws DbException;
 
     /**
      *  编码

@@ -1,29 +1,34 @@
 package com.duangframework.db.core.converters;
 
+import com.duangframework.db.annotation.Id;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
+import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 
 /**
- * Double类型转换器
+ * ObjectId类型转换器
  *
  * @author Laotang
  */
-public class CharConverter extends TypeConverter {
+public class ObjectIdConverter extends TypeConverter {
 
-    public CharConverter() {
-        super(char.class, Character.class, Character[].class);
+    public ObjectIdConverter() {
+        super(Id.class, ObjectId.class);
     }
 
     @Override
     public Converter decode(Field field, Object value) throws DbException {
+
         if (null == value) {
             return null;
         }
-        return new Converter(field, getName(field), (Character)value);
+
+        return new Converter(field, getName(field), String.valueOf(value));
+
     }
 
     @Override
@@ -33,12 +38,8 @@ public class CharConverter extends TypeConverter {
             return null;
         }
 
-        if(value instanceof List) {
-            return new Converter(field, getName(field), (List)value);
-        }
-
-        return new Converter(field, getName(field),Character.valueOf((char)value));
+        String idString = String.valueOf(value);
+        return new Converter(field, getName(field), (ObjectId.isValid(idString) ? new ObjectId(idString) : null));
     }
-
 
 }

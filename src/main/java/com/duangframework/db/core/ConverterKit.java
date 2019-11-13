@@ -1,15 +1,14 @@
 package com.duangframework.db.core;
 
-import com.duangframework.db.core.converters.Converter;
-import com.duangframework.db.core.converters.StringConverter;
+import com.duangframework.db.core.converters.*;
 import com.duangframework.db.utils.ClassKit;
+import com.duangframework.db.utils.ObjectKit;
 import com.duangframework.db.utils.ToolsKit;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +29,15 @@ public final class ConverterKit {
     }
     private ConverterKit() {
         addConverter(new StringConverter());
+        addConverter(new IntegerConverter());
+        addConverter(new LongConverter());
+        addConverter(new FloatConverter());
+        addConverter(new DoubleConverter());
+        addConverter(new DateConverter());
+
+
+        //字段上有注解的转换器
+        addConverter(new ObjectIdConverter());
     }
     public static final ConverterKit duang() {
         return ConverterKitHolder.INSTANCE;
@@ -43,7 +51,7 @@ public final class ConverterKit {
         } else {
             untypedTcMap.add(tc);
         }
-        registeredConverterClasses.add(tc.getClass());
+//        registeredConverterClasses.add(tc.getClass());
 //        tc.setMapper(mapper);
         return tc;
     }
@@ -54,14 +62,20 @@ public final class ConverterKit {
         }
     }
 
-    public Map<String,Object> encode(Object entityObject) throws DbException{
+    /**
+     * 编码，实体类转换成Map对象
+     * @param entityObject
+     * @return
+     * @throws DbException
+     */
+    public Map<String,Object> encode(Object entityObject) throws DbException {
         if(ToolsKit.isEmpty(entityObject)) {
-            throw new NullPointerException("Entity Convetor Document Fail: " + entityObject.getClass().getCanonicalName() + " is null!");
+            throw new DbException("entity converter map is fail: " + entityObject.getClass().getCanonicalName() + " is null!");
         }
         Field[] fields = ClassKit.getFields(entityObject.getClass());
         Map<String, Object> encodeMap = new HashMap<>();
         for(Field field : fields) {
-            TypeConverter typeConverter = getEncoder(field.getType());
+            TypeConverter typeConverter = getTypeConverter(field);
             Converter c = typeConverter.encode(field, ToolsKit.getFieldValue(field, entityObject));
             if(null != c && c.isNotNull() && c.isPersist()) {
                 encodeMap.put(c.getKey(), c.getValue());
@@ -71,14 +85,54 @@ public final class ConverterKit {
     }
 
     /**
+     * 解码，由数据库记录集转换为实体类对象
+     * @param dbObject  数据库记录集对象
+     * @param entityClass 实体类对象
+     * @param <T>   泛型对象
+     * @return
+     * @throws DbException
+     */
+    public <T> T decode(Map<String, Object> dbObject, Class<T> entityClass) throws Exception {
+        if(ToolsKit.isEmpty(dbObject)) {
+            throw new DbException("db result converter entity is fail: " + entityClass.getSimpleName() + " is null!");
+        }
+        Field[] fields = ClassKit.getFields(entityClass);
+        Object entityObject = ObjectKit.newInstance(entityClass);
+        for(Field field : fields) {
+            TypeConverter typeConverter = getTypeConverter(field);
+            Converter c = typeConverter.decode(field, dbObject.get(ToolsKit.getFieldName(field)));
+            if(null != c) {
+                field.setAccessible(true);
+                field.set(entityObject, c.getValue());
+            }
+        }
+        return (T)entityObject;
+    }
+
+    /**
      * 取编码器
      *
-     * @param c 字段的属性Class
+     * @param field 字段属性对象
      * @return 编码器
      */
-    private TypeConverter getEncoder(final Class c) {
-        TypeConverter typeConverter = tcMap.get(c);
-        if(ToolsKit.isNotEmpty(typeConverter)) {
+    private TypeConverter getTypeConverter(final Field field) {
+        Class<?> c = null;
+        TypeConverter typeConverter = null;
+        Annotation[] annotations = field.getAnnotations();
+        if(ToolsKit.isNotEmpty(annotations)) {
+            for (Annotation annotation : annotations) {
+                c = annotation.annotationType();
+                typeConverter =  tcMap.get(c);
+                if(null != typeConverter) {
+                    return typeConverter;
+                }
+            }
+        }
+
+        c = field.getType();
+        typeConverter =  tcMap.get(c);
+
+        if(null != typeConverter) {
             return typeConverter;
         }
 

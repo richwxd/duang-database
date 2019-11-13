@@ -11,7 +11,7 @@ import java.util.Map;
 public class DbClientFatory {
 
     private String clientId;
-    private static final Map<String, IClient> CLIENT_MAP = new HashMap();
+    public static final Map<String, IClient> CLIENT_MAP = new HashMap();
 
     private static class DbClientHolder {
         private static final DbClientFatory INSTANCE = new DbClientFatory();
@@ -25,6 +25,8 @@ public class DbClientFatory {
     private static void clear(){
 
     }
+
+
 
     /**
      *设置客户端ID

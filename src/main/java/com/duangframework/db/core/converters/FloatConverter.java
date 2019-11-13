@@ -4,9 +4,7 @@ import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.DataType;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.List;
 
 
 /**
@@ -26,18 +24,18 @@ public class FloatConverter extends TypeConverter {
     }
 
     @Override
-    public void decode(Object entityObj, Field field, Object valueObj) throws DbException {
+    public Converter decode(Field field, Object value) throws DbException {
 
-        if(null == valueObj) {
-            return ;
+        if(null == value) {
+            return null;
         }
 
-        Class<?> type = field.getType();
-
-        Object toFieldValueObj = null;
-        if (DataType.isFloat(type) || DataType.isFloatObject(type)) {
-            toFieldValueObj = convertValueObj(field, valueObj);
-        }
+//        Class<?> type = field.getType();
+//
+//        Object toFieldValueObj = null;
+//        if (DataType.isFloat(type) || DataType.isFloatObject(type)) {
+//            toFieldValueObj = convertValueObj(field, valueObj);
+//        }
         /*
         else if (DataType.isArray(type) || DataType.isListType(type)) {
             Class<?> targetClass = field.getType();
@@ -48,7 +46,8 @@ public class FloatConverter extends TypeConverter {
 
         }
         */
-        setFieldValue(entityObj, field, Float.parseFloat(String.valueOf(toFieldValueObj)));
+//        setFieldValue(entityObj, field, Float.parseFloat(String.valueOf(toFieldValueObj)));
+        return new Converter(field, getName(field), (Float)value);
     }
 
     /*

@@ -3,7 +3,6 @@ package com.duangframework.db.core.converters;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.DataType;
-import com.mongodb.DBObject;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -21,21 +20,22 @@ public class DoubleConverter extends TypeConverter {
     }
 
     @Override
-    public void decode(Object entityObj, Field field, Object valueObj) throws DbException {
+    public Converter decode(Field field, Object value) throws DbException {
 
-        if (null == valueObj) {
-            return ;
+        if (null == value) {
+            return null;
         }
 
-        Class<?> type = field.getType();
+//        Class<?> type = field.getType();
+//
+//        Object toFieldValueObj = null;
+//        if (DataType.isDouble(type) || DataType.isDoubleObject(type)) {
+//            toFieldValueObj = convertValueObj(field, valueObj);
+//        }
 
-        Object toFieldValueObj = null;
-        if (DataType.isDouble(type) || DataType.isDoubleObject(type)) {
-            toFieldValueObj = convertValueObj(field, valueObj);
-        }
+//        setFieldValue(entityObj, field, Double.parseDouble(String.valueOf(toFieldValueObj)));
 
-        setFieldValue(entityObj, field, Double.parseDouble(String.valueOf(toFieldValueObj)));
-
+        return new Converter(field, getName(field), (Double)value);
     }
 
     @Override

@@ -1,19 +1,27 @@
 package com.duangframework.db.mongodb;
 
 import com.duangframework.db.DbClientFatory;
+import com.duangframework.db.common.Page;
+import com.duangframework.db.common.Query;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
+import com.duangframework.db.utils.MongoUtils;
 import com.duangframework.db.utils.ToolsKit;
 import com.mongodb.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
+import org.bson.BSON;
+import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Mongodb Dao对象，提供可操作的方法
@@ -108,6 +116,95 @@ public class MongoDao<T> implements IDao<T> {
         BasicDBObject updateDbo = new BasicDBObject(Operator.SET, document);
 
         return collection.updateOne(query, updateDbo, options).isModifiedCountAvailable();
+    }
+
+
+    /**
+     * 根据条件查询记录
+     * @param mongoQuery		查询条件对象
+     * @return 泛型对象
+     * @throws Exception
+     */
+    public T findOne(Query mongoQuery) throws Exception {
+        if(ToolsKit.isEmpty(mongoQuery)) {
+            throw new DbException("Mongodb findOne is Fail: mongoQuery is null");
+        }
+        List<T> resultList = findAll(mongoQuery);
+        if(ToolsKit.isEmpty(resultList)) {
+            return null;
+        }
+        return resultList.get(0);
+    }
+
+    /**
+     * 查找所有
+     * @param mongoQuery		查询条件
+     * @return 结果集合，元素为指定的泛型
+     * @throws Exception
+     */
+    private List<T> findAll(Query mongoQuery) throws Exception {
+        if(null == mongoQuery) {
+            throw new DbException("Mongodb findList is Fail: mongoQuery is null");
+        }
+        Bson queryDoc = new BasicDBObject(mongoQuery.getQuery());
+        FindIterable<Document> documents = collection.find(queryDoc);
+        documents = builderQueryDoc(documents, mongoQuery);
+        final List<T> resultList = new ArrayList();
+        for(Document document : documents) {
+            resultList.add((T) ConverterKit.duang().decode(new HashMap<>(document), entityClass));
+        }
+        return resultList;
+    }
+
+    private Map<String, Object> document2Map(Document document) {
+        Map<String,Object> resultMap = new HashMap<>(document.size());
+        for(Iterator<Map.Entry<String,Object>> iterator = document.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String,Object> entry = iterator.next();
+            resultMap.put(entry.getKey(), entry.getValue());
+        }
+        return resultMap;
+    }
+
+    private FindIterable<Document> builderQueryDoc(FindIterable<Document> documents, Query mongoQuery) {
+        Page<T> page = mongoQuery.getPageObj();
+        BasicDBObject fieldDbo = (BasicDBObject)MongoUtils.convert2DBFields(mongoQuery.getFields());
+        if(ToolsKit.isNotEmpty(fieldDbo) && !fieldDbo.isEmpty()) {
+            documents.projection(fieldDbo);
+        }
+        BasicDBObject orderDbo =  (BasicDBObject)MongoUtils.convert2DBOrder(mongoQuery.getOrderObj());
+        if(ToolsKit.isNotEmpty(orderDbo) && !orderDbo.isEmpty()) {
+            documents.sort(orderDbo);
+        }
+        if((page.getSkipNum() > -1 || page.getPageNo() > 0) && page.getPageSize() > 1) {
+            documents.skip(getSkipNum(page));
+            documents.limit(page.getPageSize());
+        }
+        BasicDBObject hintDbo = new BasicDBObject(mongoQuery.getHint());
+        if(ToolsKit.isNotEmpty(hintDbo) && !hintDbo.isEmpty()) {
+            documents.hint(hintDbo);
+        }
+        if(ToolsKit.isEmpty(documents)) {
+            throw new NullPointerException("ducuments is null");
+        }
+        return documents;
+    }
+
+    /**
+     * 确定跳过的行数
+     * @param page
+     * @return
+     */
+    private int getSkipNum(Page<T> page) {
+        int skipNum = page.getSkipNum();
+        int pageNo = page.getPageNo();
+        int pageSize = page.getPageSize();
+        if(skipNum > -1) {
+            return skipNum;
+        } else if(pageSize == -1) {
+            return 0;
+        } else {
+            return (pageNo>0 ? (pageNo-1) : pageNo) * pageSize;
+        }
     }
 
 }

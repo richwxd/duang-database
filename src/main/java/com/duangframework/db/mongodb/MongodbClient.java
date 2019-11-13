@@ -62,20 +62,22 @@ public class MongodbClient implements IClient<MongoClient> {
 
     @Override
     public IConnectOptions getOptions() {
-        return null;
+        return connectOptions;
     }
 
     @Override
     public MongoClient getClient() throws DbException {
-        java.util.Objects.requireNonNull(connectOptions, "链接属性对象不能为空");
-        clientOptionsBuilder = MongoClientOptions.builder().readPreference(ReadPreference.secondaryPreferred());
-        String url = connectOptions.getUrl();
-        if(ToolsKit.isEmpty(url)) {
-            MongoCredential credential =  security();
-            mongoClient = ToolsKit.isEmpty(credential) ? new MongoClient(getServerAddressList(), clientOptionsBuilder.build()) :
-                    new MongoClient(getServerAddressList(), credential, clientOptionsBuilder.build());
-        } else {
-            mongoClient = getClientWithURL(url);
+        if (null == mongoClient) {
+            java.util.Objects.requireNonNull(connectOptions, "链接属性对象不能为空");
+            clientOptionsBuilder = MongoClientOptions.builder().readPreference(ReadPreference.secondaryPreferred());
+            String url = connectOptions.getUrl();
+            if (ToolsKit.isEmpty(url)) {
+                MongoCredential credential = security();
+                mongoClient = ToolsKit.isEmpty(credential) ? new MongoClient(getServerAddressList(), clientOptionsBuilder.build()) :
+                        new MongoClient(getServerAddressList(), credential, clientOptionsBuilder.build());
+            } else {
+                mongoClient = getClientWithURL(url);
+            }
         }
         return mongoClient;
     }

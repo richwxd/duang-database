@@ -56,8 +56,13 @@ public class Converter {
         return null != field && !ToolsKit.isAllowNull();
     }
 
+    /**
+     * 是否持久化
+     * @return
+     */
     public boolean isPersist() {
-        return field.isAnnotationPresent(Persist.class);
+        Persist persist = field.getAnnotation(Persist.class);
+        return (null == persist) ? true : persist.value();
     }
 
     @Override

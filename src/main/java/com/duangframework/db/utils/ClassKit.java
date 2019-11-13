@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class ClassKit {
+public final class ClassKit {
 
     private static final ConcurrentMap<String, Field[]> FIELD_MAPPING_MAP = new ConcurrentHashMap<String, Field[]>();
+
+    private ClassKit() {
+
+    }
 
     /**
      * 取出类的全名，包括包名

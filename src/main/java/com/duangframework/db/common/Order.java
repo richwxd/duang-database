@@ -13,7 +13,7 @@ public class Order {
     private String field;
     private Integer order;
 
-    private Map<String, Integer> orderLinkedMap = new LinkedHashMap<>();
+    private Map<String, String> orderLinkedMap = new LinkedHashMap<>();
 
     /**
      * ASC: 1
@@ -21,6 +21,10 @@ public class Order {
      */
     public enum SortEnum {
         ASC, DESC
+    }
+
+    public Order() {
+
     }
 
     public Order(String field, SortEnum sortEnum) {
@@ -34,8 +38,12 @@ public class Order {
      * @return
      */
     public Order add(String fieldName, SortEnum sortEnum) {
-        orderLinkedMap.put(fieldName, SortEnum.ASC.equals(sortEnum.name()) ? 1 : -1);
+        orderLinkedMap.put(fieldName, sortEnum.name());
         return this;
+    }
+
+    public Map<String,String> getOrderMap() {
+        return orderLinkedMap;
     }
 
 }
