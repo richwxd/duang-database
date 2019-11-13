@@ -2,8 +2,10 @@ package com.duangframework.db.entity;
 
 import com.duangframework.db.annotation.Entity;
 import com.duangframework.db.annotation.Param;
+import sun.rmi.runtime.Log;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *日志记录对象
@@ -40,7 +42,18 @@ public class Logs extends BaseEntity {
     @Param(label="请求类型")
     private String type;
 
-    public Logs() {
+    private List<String> stringList;
+    private List<Integer> integerList;
+    private List<Double> doubleList;
+
+    private List<Logs> logsList;
+
+    public Logs () {
+
+    }
+
+    public Logs(String requestId) {
+        this.requestId = requestId;
     }
 
     public Logs(String requestId, String cmd, String result, Integer state, String type) {
@@ -84,6 +97,38 @@ public class Logs extends BaseEntity {
         this.type = type;
     }
 
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
+    }
+
+    public List<String> getStringList() {
+        return stringList;
+    }
+
+    public void setStringList(List<String> stringList) {
+        this.stringList = stringList;
+    }
+
+    public List<Integer> getIntegerList() {
+        return integerList;
+    }
+
+    public void setIntegerList(List<Integer> integerList) {
+        this.integerList = integerList;
+    }
+
+    public List<Double> getDoubleList() {
+        return doubleList;
+    }
+
+    public void setDoubleList(List<Double> doubleList) {
+        this.doubleList = doubleList;
+    }
+
     @Override
     public String toString() {
         return "Log{" +
@@ -93,5 +138,13 @@ public class Logs extends BaseEntity {
                 ", state=" + state +
                 ", type=" + type +
                 '}';
+    }
+
+    public List<Logs> getLogsList() {
+        return logsList;
+    }
+
+    public void setLogsList(List<Logs> logsList) {
+        this.logsList = logsList;
     }
 }

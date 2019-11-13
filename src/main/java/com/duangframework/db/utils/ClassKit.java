@@ -2,6 +2,8 @@ package com.duangframework.db.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,6 +77,23 @@ public final class ClassKit {
             }
         }
         return result;
+    }
+
+    /**
+     * 取字段属性里的泛型类型
+     * @param field 字段属性
+     * @return 泛型类
+     */
+    public static Class<?> getGenericTypeClass(Field field) {
+        ParameterizedType paramTypeItem = (ParameterizedType)field.getGenericType();
+        Type[] types = paramTypeItem.getActualTypeArguments();
+        if(types.length == 1) {
+            return (Class)types[0];
+        } else if (types.length == 2) {
+            return (Class)types[1];
+        } else {
+            return Object.class;
+        }
     }
 
 }

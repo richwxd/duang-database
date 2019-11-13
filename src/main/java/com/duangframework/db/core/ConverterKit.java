@@ -34,6 +34,7 @@ public final class ConverterKit {
         addConverter(new FloatConverter());
         addConverter(new DoubleConverter());
         addConverter(new DateConverter());
+        addConverter(new CollectionConverter());
 
 
         //字段上有注解的转换器
@@ -92,7 +93,7 @@ public final class ConverterKit {
      * @return
      * @throws DbException
      */
-    public <T> T decode(Map<String, Object> dbObject, Class<T> entityClass) throws Exception {
+    public <T> T decode(Map<String, Object> dbObject, Class<?> entityClass) throws Exception {
         if(ToolsKit.isEmpty(dbObject)) {
             throw new DbException("db result converter entity is fail: " + entityClass.getSimpleName() + " is null!");
         }
@@ -109,28 +110,8 @@ public final class ConverterKit {
         return (T)entityObject;
     }
 
-    /**
-     * 取编码器
-     *
-     * @param field 字段属性对象
-     * @return 编码器
-     */
-    private TypeConverter getTypeConverter(final Field field) {
-        Class<?> c = null;
-        TypeConverter typeConverter = null;
-        Annotation[] annotations = field.getAnnotations();
-        if(ToolsKit.isNotEmpty(annotations)) {
-            for (Annotation annotation : annotations) {
-                c = annotation.annotationType();
-                typeConverter =  tcMap.get(c);
-                if(null != typeConverter) {
-                    return typeConverter;
-                }
-            }
-        }
-
-        c = field.getType();
-        typeConverter =  tcMap.get(c);
+    public TypeConverter getTypeConverter(final Class<?> c) {
+        TypeConverter typeConverter =  tcMap.get(c);
 
         if(null != typeConverter) {
             return typeConverter;
@@ -145,6 +126,29 @@ public final class ConverterKit {
             throw new DbException("类型编码器不存在");
         }
         return typeConverter;
+    }
+
+    /**
+     * 取编码器
+     * 如字段上有注解，优先取注解对应的转换器
+     *
+     * @param field 字段属性对象
+     * @return 编码器
+     */
+    private TypeConverter getTypeConverter(final Field field) {
+        TypeConverter typeConverter = null;
+        Annotation[] annotations = field.getAnnotations();
+        if(ToolsKit.isNotEmpty(annotations)) {
+            for (Annotation annotation : annotations) {
+                Class<?> c = annotation.annotationType();
+                typeConverter =  tcMap.get(c);
+                if(null != typeConverter) {
+                    return typeConverter;
+                }
+            }
+        }
+
+        return getTypeConverter(field.getType());
     }
 
 }

@@ -87,13 +87,29 @@ public abstract class TypeConverter implements IDataConverter {
         }
     }
 
+    protected Object convertValueObj(Object valueObj) {
+        if(ToolsKit.isEmpty(valueObj)) {
+            throw new DbException("转换值对象时，valueObj不能为空");
+        }
+        if (valueObj instanceof  DBObject) {
+            return (DBObject)valueObj;
+        }
+        else if (valueObj instanceof Document) {
+            return (Document)valueObj;
+        }
+        else {
+            return valueObj;
+        }
+    }
+
+
     /**
      * 解码
      * @param field 字符属性
      * @param valueObj 值对象
      * @return
      */
-    public abstract Converter decode(Field field, Object valueObj) throws DbException;
+    public abstract Converter decode(Field field, Object valueObj) throws Exception;
 
     /**
      *  编码
