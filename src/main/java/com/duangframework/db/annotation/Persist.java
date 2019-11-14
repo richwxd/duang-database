@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 只存在Entity对象，不持久化到数据库
+ * 只存在Entity对象，是否持久化到数据库
  * 默认为true，持久化到数据库
  *
  * @author Laotang
