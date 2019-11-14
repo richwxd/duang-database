@@ -2,20 +2,21 @@ package com.duangframework.db.core.converters;
 
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
+import com.duangframework.db.utils.DataType;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 
 /**
- * Double类型转换器
+ * Character 类型转换器
  *
  * @author Laotang
  */
 public class CharConverter extends TypeConverter {
 
     public CharConverter() {
-        super(char.class, Character.class, Character[].class);
+        super(char.class, Character.class, char[].class, Character[].class);
     }
 
     @Override
@@ -23,7 +24,15 @@ public class CharConverter extends TypeConverter {
         if (null == value) {
             return null;
         }
-        return new Converter(field, getName(field), (Character)value);
+
+        Class<?> type = field.getType();
+
+        if(DataType.isChar(type) || DataType.isCharObject(type)) {
+            return new Converter(field, getName(field), (Character)value);
+        } else {
+            return converterDecodeDataType(field, value);
+        }
+
     }
 
     @Override
@@ -33,11 +42,14 @@ public class CharConverter extends TypeConverter {
             return null;
         }
 
-        if(value instanceof List) {
-            return new Converter(field, getName(field), (List)value);
+        Class<?> type = field.getType();
+
+        if(DataType.isChar(type) || DataType.isCharObject(type)) {
+            return new Converter(field, getName(field),Character.valueOf((char)value));
+        } else {
+            return  converterEncodeDataSetType(field, value);
         }
 
-        return new Converter(field, getName(field),Character.valueOf((char)value));
     }
 
 

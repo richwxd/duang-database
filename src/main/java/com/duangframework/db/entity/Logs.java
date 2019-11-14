@@ -6,6 +6,7 @@ import sun.rmi.runtime.Log;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *日志记录对象
@@ -47,6 +48,15 @@ public class Logs extends BaseEntity {
     private List<Double> doubleList;
 
     private List<Logs> logsList;
+    private Map<String,String> stringMap;
+    private Map<String, Logs> logsMap;
+
+    private Logs logItem;
+
+    private Integer[] integerArray;
+    private String[] stringArray;
+//    private Logs[] entityArray;
+
 
     public Logs () {
 
@@ -147,4 +157,52 @@ public class Logs extends BaseEntity {
     public void setLogsList(List<Logs> logsList) {
         this.logsList = logsList;
     }
+
+    public Map<String, String> getStringMap() {
+        return stringMap;
+    }
+
+    public void setStringMap(Map<String, String> stringMap) {
+        this.stringMap = stringMap;
+    }
+
+    public Map<String, Logs> getLogsMap() {
+        return logsMap;
+    }
+
+    public void setLogsMap(Map<String, Logs> logsMap) {
+        this.logsMap = logsMap;
+    }
+
+    public Logs getLogItem() {
+        return logItem;
+    }
+
+    public void setLogItem(Logs logItem) {
+        this.logItem = logItem;
+    }
+
+    public Integer[] getIntegerArray() {
+        return integerArray;
+    }
+
+    public void setIntegerArray(Integer[] integerArray) {
+        this.integerArray = integerArray;
+    }
+
+    public String[] getStringArray() {
+        return stringArray;
+    }
+
+    public void setStringArray(String[] stringArray) {
+        this.stringArray = stringArray;
+    }
+
+//    public Logs[] getEntityArray() {
+//        return entityArray;
+//    }
+//
+//    public void setEntityArray(Logs[] entityArray) {
+//        this.entityArray = entityArray;
+//    }
 }

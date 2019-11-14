@@ -8,8 +8,13 @@ import com.duangframework.db.entity.IdEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 public final class ToolsKit {
@@ -126,7 +131,20 @@ public final class ToolsKit {
         java.util.Objects.requireNonNull(entityObj, "entityObj is null");
         try {
             field.setAccessible(true);
-            return field.get(entityObj);
+            Class<?> fieldClass = field.getType();
+            if (fieldClass.isArray()) {
+                return (Object[])field.get(entityObj); // 换成数组
+//                Object arrayObj = field.get(entityObj);
+//               if (null == arrayObj) {
+//                   return null;
+//               }
+//                int length =Array.getLength(arrayObj);
+//                Object exampleArray = Array.newInstance(fieldClass.getComponentType(), length);
+//                System.arraycopy(arrayObj, 0,exampleArray, 0, length);
+//                return exampleArray;
+            } else {
+                return field.get(entityObj);
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -177,5 +195,38 @@ public final class ToolsKit {
             }
         }
         return true;
+    }
+
+
+    /**
+     * 根据format字段，格式化日期
+     * @param date          日期
+     * @param format        格式化字段
+     * @return
+     */
+    public static String formatDate(Date date, String format) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            return sdf.format(date);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            return null;
+        }
+    }
+
+    /**
+     *  将字符串日期根据format格式化字段转换成日期类型
+     * @param stringDate    字符串日期
+     * @param format           格式化日期
+     * @return
+     */
+    public static Date parseDate(String stringDate, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        try {
+            return sdf.parse(stringDate);
+        } catch (ParseException ex) {
+            logger.error(ex.getMessage(), ex);
+            return null;
+        }
     }
 }

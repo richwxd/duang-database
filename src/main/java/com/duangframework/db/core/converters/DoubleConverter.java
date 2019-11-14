@@ -26,16 +26,14 @@ public class DoubleConverter extends TypeConverter {
             return null;
         }
 
-//        Class<?> type = field.getType();
-//
-//        Object toFieldValueObj = null;
-//        if (DataType.isDouble(type) || DataType.isDoubleObject(type)) {
-//            toFieldValueObj = convertValueObj(field, valueObj);
-//        }
+        Class<?> type = field.getType();
 
-//        setFieldValue(entityObj, field, Double.parseDouble(String.valueOf(toFieldValueObj)));
+        if(DataType.isFloat(type) || DataType.isFloatObject(type)) {
+            return new Converter(field, getName(field), (Double)value);
+        } else {
+            return converterDecodeDataType(field, value);
+        }
 
-        return new Converter(field, getName(field), (Double)value);
     }
 
     @Override
@@ -45,11 +43,14 @@ public class DoubleConverter extends TypeConverter {
             return null;
         }
 
-        if(value instanceof List) {
-            return new Converter(field, getName(field), (List)value);
+        Class<?> type = field.getType();
+
+        if(DataType.isFloat(type) || DataType.isFloatObject(type)) {
+            return new Converter(field, getName(field), Double.parseDouble(String.valueOf(value)));
+        } else {
+            return converterEncodeDataSetType(field, value);
         }
 
-        return new Converter(field, getName(field), Double.parseDouble(String.valueOf(value)));
     }
 
 

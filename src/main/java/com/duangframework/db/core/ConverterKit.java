@@ -1,14 +1,15 @@
 package com.duangframework.db.core;
 
+import com.duangframework.db.annotation.Bean;
 import com.duangframework.db.core.converters.*;
 import com.duangframework.db.utils.ClassKit;
+import com.duangframework.db.utils.DataType;
 import com.duangframework.db.utils.ObjectKit;
 import com.duangframework.db.utils.ToolsKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ConverterKit {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConverterKit.class);
+
     private static final ConverterKit CONVERTER_KIT = new ConverterKit();
-    /**未知类型(一般是指自定义的类型)转换器Map*/
-    private final List<TypeConverter> untypedTcMap = new LinkedList<TypeConverter>();
+
+    /**Entity类型(一般是指自定义的类型)转换器Map*/
+    private final List<TypeConverter> entityTcList = new ArrayList<TypeConverter>(1);
+
     /** 基础类型转换器Map*/
     private final Map<Class, TypeConverter> tcMap = new ConcurrentHashMap<Class, TypeConverter>();
 
@@ -27,6 +31,7 @@ public final class ConverterKit {
     private static class ConverterKitHolder {
         private static final ConverterKit INSTANCE = new ConverterKit();
     }
+
     private ConverterKit() {
         addConverter(new StringConverter());
         addConverter(new IntegerConverter());
@@ -35,6 +40,8 @@ public final class ConverterKit {
         addConverter(new DoubleConverter());
         addConverter(new DateConverter());
         addConverter(new CollectionConverter());
+        addConverter(new MapConverter());
+        addConverter(new EntityConverter());
 
 
         //字段上有注解的转换器
@@ -45,12 +52,12 @@ public final class ConverterKit {
     }
 
     public TypeConverter addConverter(final TypeConverter tc) {
-        if (tc.getSupportedTypes() != null) {
+        if (null != tc.getSupportedTypes()) {
             for (final Class c : tc.getSupportedTypes()) {
                 addTypedConverter(c, tc);
             }
         } else {
-            untypedTcMap.add(tc);
+            entityTcList.add(tc);
         }
 //        registeredConverterClasses.add(tc.getClass());
 //        tc.setMapper(mapper);
@@ -117,11 +124,12 @@ public final class ConverterKit {
             return typeConverter;
         }
 
-        for (TypeConverter tc : untypedTcMap) {
-            if (tc.getSupportedTypes().contains(c)) {
+        for (TypeConverter tc : entityTcList) {
+            if(DataType.isBeanType(c)) {
                 typeConverter = tc;
             }
         }
+
         if(ToolsKit.isEmpty(typeConverter)) {
             throw new DbException("类型编码器不存在");
         }

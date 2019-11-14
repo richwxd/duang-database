@@ -35,14 +35,17 @@ public class CollectionConverter extends TypeConverter {
         if (DataType.isBaseType(genericTypeClass)) {
             return new Converter(field, getName(field), valueList);
         } else {
-            List resultList = new ArrayList(valueList.size());
+            List<Object> decodeList = new ArrayList(valueList.size());
             for (Object objectItem : valueList) {
                 Document document = (Document)convertValueObj(objectItem);
                 Object resultObj = ConverterKit.duang().decode(document, genericTypeClass);
-                resultList.add(resultObj);
+                decodeList.add(resultObj);
             }
-            return new Converter(field, getName(field), resultList);
+            if(!decodeList.isEmpty()) {
+                return new Converter(field, getName(field), decodeList);
+            }
         }
+        return null;
     }
 
     @Override
@@ -57,15 +60,17 @@ public class CollectionConverter extends TypeConverter {
         if(DataType.isBaseType(genericTypeClass)) {
             return new Converter(field, getName(field), valueList);
         } else {
-            List resultList = new ArrayList(valueList.size());
+            List<Map<String, Object>> encodeList = new ArrayList(valueList.size());
             for (Object objectItem : valueList) {
                 Map<String, Object> map = ConverterKit.duang().encode(objectItem);
-                resultList.add(map);
+                if(null != map && !map.isEmpty()) {
+                    encodeList.add(map);
+                }
             }
-            return new Converter(field, getName(field), resultList);
+            if(!encodeList.isEmpty()) {
+                return new Converter(field, getName(field), encodeList);
+            }
+            return null;
         }
-
     }
-
-
 }

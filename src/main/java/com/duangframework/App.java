@@ -6,23 +6,23 @@ import com.duangframework.db.entity.Logs;
 import com.duangframework.db.mongodb.MongoDao;
 import com.duangframework.db.mongodb.MongodbClient;
 import com.duangframework.db.mongodb.MongodbConnectOptions;
+import com.duangframework.db.utils.DuangId;
 import org.bson.types.ObjectId;
+import sun.rmi.runtime.Log;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class App {
     public static void main(String[] args) {
         MongodbClient mongodbClient = new MongodbClient(new MongodbConnectOptions.Builder()
-//                .dataBase("openAGV")
-//                .host("172.20.10.6")
-//                .port(27017)
-                .dataBase("test")
-                .host("42.96.139.238")
-                .port(14823)
-//                .userName("admin")
-//                .passWord("1b88ab6d")
+                .dataBase("openAGV")
+                .host("172.20.10.6")
+                .port(27017)
+//                .dataBase("test")
+//                .host("42.96.139.238")
+//                .port(14823)
+                .userName("admin")
+                .passWord("1b88ab6d")
                 .build());
         try {
 //            MongoClient client = mongodbClient.getClient();
@@ -56,6 +56,35 @@ public class App {
             logss.add(new Logs(new ObjectId().toString()));
             entity.setLogsList(logss);
 
+            Map<String,String> strMap = new HashMap<>();
+            strMap.put("name","laotang");
+            strMap.put("sex","男");
+            strMap.put("年龄","40");
+            entity.setStringMap(strMap);
+
+            Map<String, Logs> logsMap = new HashMap<>();
+            logsMap.put("第1位", new Logs(new ObjectId().toString()));
+            logsMap.put("第2位", new Logs(new ObjectId().toString()));
+            logsMap.put("第3位", new Logs(new ObjectId().toString()));
+            entity.setLogsMap(logsMap);
+
+            Logs logs123 = new Logs();
+            logs123.setId(new DuangId().toString());
+            logs123.setRequestId(new DuangId().toHexString());
+            logs123.setCmd("getmag");
+            logs123.setCreateTime(new Date());
+            logs123.setUpdateTime(new Date());
+            logs123.setResult("##,,A030,,s,,getmag,,0,,ad7d,,ZZ");
+            logs123.setLogsMap(logsMap);
+            logs123.setStringMap(strMap);
+            entity.setLogItem(logs123);
+
+
+            Integer[] integerArray = new Integer[2];
+            integerArray[0] = 1;
+            integerArray[1] = 2;
+            entity.setIntegerArray(integerArray);
+
             MongoDao<Logs> logsDao = new MongoDao<>(mongodbClient.getClientId(), Logs.class);
             logsDao.save(entity);
 
@@ -63,6 +92,7 @@ public class App {
             query.eq(Logs.REQUEST_ID, requestId);
             Logs logs = logsDao.findOne(query);
             System.out.println(logs.toString());
+            System.out.println(logs.getIntegerArray()[0]);
 
 //            List<String> dbList = client.getDatabaseNames();
 //            System.out.println("dbList:   " + dbList);

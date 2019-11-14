@@ -1,35 +1,34 @@
 package com.duangframework.db.core.converters;
 
+
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.DataType;
-
 import java.lang.reflect.Field;
-import java.util.List;
 
 
 /**
- * String类型转换器
+ * Boolean
  *
  * @author Laotang
  */
-public class StringConverter extends TypeConverter {
+public class BooleanConverter extends TypeConverter {
 
-    public StringConverter() {
-        super(String.class, String[].class);
+    public BooleanConverter() {
+        super(boolean.class, Boolean.class, boolean[].class, Boolean[].class);
     }
 
     @Override
     public Converter decode(Field field, Object value) throws DbException {
 
-        if (null == value) {
+        if (value == null) {
             return null;
         }
 
-        Class<?> type = field.getType();
-
-        if(DataType.isLong(type) || DataType.isLongObject(type)) {
-            return new Converter(field, getName(field), (String)value);
+        if (value instanceof Boolean) {
+            return new Converter(field, getName(field), (Boolean)value);
+        } if (value instanceof Number) {
+            return  new Converter(field, getName(field),((Number) value).intValue() != 0);
         } else {
             return converterDecodeDataType(field, value);
         }
@@ -39,17 +38,14 @@ public class StringConverter extends TypeConverter {
     @Override
     public Converter encode(Field field, Object value) throws DbException {
 
-        if(null == value) {
-            return null;
-        }
-
         Class<?> type = field.getType();
 
-        if(DataType.isString(type)) {
-            return new Converter(field, getName(field), String.valueOf(value));
+        if(DataType.isBoolean(type) || DataType.isBooleanObject(type)) {
+            return new Converter(field, getName(field), Boolean.parseBoolean(String.valueOf(value)));
         } else {
             return  converterEncodeDataSetType(field, value);
         }
+
     }
 
 }

@@ -19,49 +19,37 @@ public class FloatConverter extends TypeConverter {
     }
 
     @Override
-    public Converter encode(Field field, Object value) throws DbException {
-        return null;
-    }
-
-    @Override
     public Converter decode(Field field, Object value) throws DbException {
 
         if(null == value) {
             return null;
         }
 
-//        Class<?> type = field.getType();
-//
-//        Object toFieldValueObj = null;
-//        if (DataType.isFloat(type) || DataType.isFloatObject(type)) {
-//            toFieldValueObj = convertValueObj(field, valueObj);
-//        }
-        /*
-        else if (DataType.isArray(type) || DataType.isListType(type)) {
-            Class<?> targetClass = field.getType();
-            final Class<?> type = targetClass.isArray() ? targetClass.getComponentType() : targetClass;
-            toFieldValueObj = convertToArray(type, (List<?>) valueObj);
+        Class<?> type = field.getType();
 
-        } else if(DataType.isMapType(type)) {
-
+        if(DataType.isFloat(type) || DataType.isFloatObject(type)) {
+            return new Converter(field, getName(field), (Float)value);
+        } else {
+            return converterDecodeDataType(field, value);
         }
-        */
-//        setFieldValue(entityObj, field, Float.parseFloat(String.valueOf(toFieldValueObj)));
-        return new Converter(field, getName(field), (Float)value);
+
     }
 
-    /*
-    private Object convertToArray(final Class type, final List<?> values) {
-        final Object array = Array.newInstance(type, values.size());
-        try {
-            return values.toArray((Object[]) array);
-        } catch (Exception e) {
-            for (int i = 0; i < values.size(); i++) {
-                Array.set(array, i, decode(Float.class, values.get(i)));
-            }
-            return array;
+    @Override
+    public Converter encode(Field field, Object value) throws DbException {
+
+        if (null == value) {
+            return null;
         }
+
+        Class<?> type = field.getType();
+
+        if(DataType.isFloat(type) || DataType.isFloatObject(type)) {
+            return new Converter(field, getName(field), Float.parseFloat(String.valueOf(value)));
+        } else {
+            return converterEncodeDataSetType(field, value);
+        }
+
     }
-    */
 
 }

@@ -5,7 +5,6 @@ import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.DataType;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
 public class LongConverter extends TypeConverter {
 
     public LongConverter() {
-        super(long.class, Long.class, Long[].class);
+        super(long.class, Long.class, long[].class, Long[].class);
     }
 
     @Override
@@ -26,16 +25,14 @@ public class LongConverter extends TypeConverter {
             return null;
         }
 
-//        Class<?> type = field.getType();
-//
-//        Object toFieldValueObj = null;
-//        if (DataType.isLong(type) || DataType.isLongObject(type)) {
-//            toFieldValueObj = convertValueObj(field, valueObj);
-//        }
-//
-//        setFieldValue(entityObj, field, Long.parseLong(String.valueOf(toFieldValueObj)));
+        Class<?> type = field.getType();
 
-        return new Converter(field, getName(field), (Integer)value);
+        if(DataType.isLong(type) || DataType.isLongObject(type)) {
+            return new Converter(field, getName(field), (Long)value);
+        } else {
+            return converterDecodeDataType(field, value);
+        }
+
     }
 
     @Override
@@ -45,11 +42,14 @@ public class LongConverter extends TypeConverter {
             return null;
         }
 
-        if(value instanceof List) {
-            return new Converter(field, getName(field), (List)value);
+        Class<?> type = field.getType();
+
+        if(DataType.isLong(type) || DataType.isLongObject(type)) {
+            return new Converter(field, getName(field), Long.parseLong(String.valueOf(value)));
+        } else {
+            return  converterEncodeDataSetType(field, value);
         }
 
-        return new Converter(field, getName(field), Long.parseLong(String.valueOf(value)));
     }
 
 
