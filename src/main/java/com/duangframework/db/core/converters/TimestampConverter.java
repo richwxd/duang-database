@@ -20,7 +20,7 @@ public class TimestampConverter extends TypeConverter {
     }
 
     @Override
-    public Converter decode(Field field, Object value) throws Exception {
+    public Converter decode(Field field, Object value) throws DbException {
         if (null == value) {
             return null;
         }

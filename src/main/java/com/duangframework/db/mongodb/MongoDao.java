@@ -3,6 +3,7 @@ package com.duangframework.db.mongodb;
 import com.duangframework.db.DbClientFatory;
 import com.duangframework.db.common.Page;
 import com.duangframework.db.common.Query;
+import com.duangframework.db.common.Update;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.IDao;
@@ -118,6 +119,10 @@ public class MongoDao<T> implements IDao<T> {
         return collection.updateOne(query, updateDbo, options).isModifiedCountAvailable();
     }
 
+    @Override
+    public boolean update(Query<T> query, Update<T> update) {
+        return false;
+    }
 
     /**
      * 根据条件查询记录
@@ -125,11 +130,11 @@ public class MongoDao<T> implements IDao<T> {
      * @return 泛型对象
      * @throws Exception
      */
-    public T findOne(Query mongoQuery) throws Exception {
+    public T findOne(Query mongoQuery) throws DbException {
         if(ToolsKit.isEmpty(mongoQuery)) {
             throw new DbException("Mongodb findOne is Fail: mongoQuery is null");
         }
-        List<T> resultList = findAll(mongoQuery);
+        List<T> resultList = findList(mongoQuery);
         if(ToolsKit.isEmpty(resultList)) {
             return null;
         }
@@ -137,12 +142,13 @@ public class MongoDao<T> implements IDao<T> {
     }
 
     /**
-     * 查找所有
+     * 根据查询条件查找记录
      * @param mongoQuery		查询条件
      * @return 结果集合，元素为指定的泛型
      * @throws Exception
      */
-    private List<T> findAll(Query mongoQuery) throws Exception {
+    @Override
+    public List<T> findList(Query mongoQuery) throws DbException {
         if(null == mongoQuery) {
             throw new DbException("Mongodb findList is Fail: mongoQuery is null");
         }
@@ -205,6 +211,22 @@ public class MongoDao<T> implements IDao<T> {
         } else {
             return (pageNo>0 ? (pageNo-1) : pageNo) * pageSize;
         }
+    }
+
+    public Query<T> query() {
+        return new Query.Builder()
+//                .entityClass(entityClass)
+//                .database(db)
+//                .collection(collection)
+//                .keys(collectionKey.toMap())
+                .dao(this)
+                .builder();
+    }
+
+    public Update<T> update() {
+        return new Update.Builder()
+                .dao(this)
+                .builder();
     }
 
 }
