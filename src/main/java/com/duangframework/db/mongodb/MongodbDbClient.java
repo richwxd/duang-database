@@ -1,7 +1,7 @@
 package com.duangframework.db.mongodb;
 
 import com.duangframework.db.core.DbException;
-import com.duangframework.db.core.IClient;
+import com.duangframework.db.core.IDbClient;
 import com.duangframework.db.core.IConnectOptions;
 import com.duangframework.db.core.ServerNodeAddress;
 import com.duangframework.db.utils.MD5;
@@ -19,9 +19,9 @@ import java.util.List;
  *
  * @author Laotang
  */
-public class MongodbClient implements IClient<MongoClient> {
+public class MongodbDbClient implements IDbClient<MongoClient> {
 
-    private static final Logger logger = LoggerFactory.getLogger(MongodbClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongodbDbClient.class);
 
     private IConnectOptions connectOptions;
     private MongoClient mongoClient;
@@ -29,12 +29,12 @@ public class MongodbClient implements IClient<MongoClient> {
     private String clientId;
     private DBCollectionFindOptions findOptions;
 
-    public MongodbClient(IConnectOptions connectOptions) {
+    public MongodbDbClient(IConnectOptions connectOptions) {
         this.connectOptions = connectOptions;
     }
 
 
-    public MongodbClient(String clientId, IConnectOptions connectOptions) {
+    public MongodbDbClient(String clientId, IConnectOptions connectOptions) {
         this.clientId = clientId;
         this.connectOptions = connectOptions;
     }

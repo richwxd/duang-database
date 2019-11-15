@@ -10,7 +10,6 @@ import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
 import com.duangframework.db.utils.ToolsKit;
 import com.duangframework.db.vtor.common.ValidatorException;
-import com.duangframework.db.vtor.core.VtorFactory;
 import com.duangframework.db.vtor.utils.VtorKit;
 import com.mongodb.*;
 import org.bson.types.ObjectId;
@@ -41,7 +40,7 @@ public class MongoDao<T> implements IDao<T> {
             throw new DbException("clientId不能为空");
         }
 
-        MongodbClient mongoClient = DbClientFatory.duang().id(clientId).getClient();
+        MongodbDbClient mongoClient = DbClientFatory.duang().id(clientId).getClient();
         if(ToolsKit.isEmpty(mongoClient)) {
             throw new DbException("根据["+clientId+"]取MongoClient时，MongoClient为空，请检查！");
         }

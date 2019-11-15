@@ -7,17 +7,16 @@ import com.duangframework.db.entity.IdEntity;
 import com.duangframework.db.entity.Logs;
 import com.duangframework.db.enums.EnvEnum;
 import com.duangframework.db.mongodb.MongoDao;
-import com.duangframework.db.mongodb.MongodbClient;
+import com.duangframework.db.mongodb.MongodbDbClient;
 import com.duangframework.db.mongodb.MongodbConnectOptions;
 import com.duangframework.db.utils.DuangId;
 import org.bson.types.ObjectId;
-import sun.rmi.runtime.Log;
 
 import java.util.*;
 
 public class App {
     public static void main(String[] args) {
-        MongodbClient mongodbClient = new MongodbClient(new MongodbConnectOptions.Builder()
+        MongodbDbClient mongodbClient = new MongodbDbClient(new MongodbConnectOptions.Builder()
                 .dataBase("openAGV")
                 .host("192.168.8.184")
                 .port(27017)

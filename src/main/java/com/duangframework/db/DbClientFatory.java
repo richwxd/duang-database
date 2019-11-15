@@ -1,6 +1,6 @@
 package com.duangframework.db;
 
-import com.duangframework.db.core.IClient;
+import com.duangframework.db.core.IDbClient;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 public class DbClientFatory {
 
     private String clientId;
-    public static final Map<String, IClient> CLIENT_MAP = new HashMap();
+    public static final Map<String, IDbClient> CLIENT_MAP = new HashMap();
 
     private static class DbClientHolder {
         private static final DbClientFatory INSTANCE = new DbClientFatory();

@@ -1,6 +1,6 @@
 package com.duangframework.db.core;
 
-public interface IClient<T> {
+public interface IDbClient<T> {
 
     /**
      * 客户端在缓存池里唯一的ID
