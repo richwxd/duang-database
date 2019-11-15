@@ -1,6 +1,7 @@
 package com.duangframework.db.utils;
 
 import com.duangframework.db.common.Order;
+import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.entity.IdEntity;
 import com.mongodb.BasicDBObject;
@@ -108,6 +109,20 @@ public class MongoUtils {
         }
     }
 
-
+    /**
+     *  将对象编码，返回Mongodb需要的序列化对象
+     * @param obj 待编码的对象
+     * @return  序列化后的对象
+     */
+    public static Object getEncode(Object obj) {
+        if(null == obj) {
+            throw new DbException("toBson is fail:  obj is null");
+        }
+        try {
+            return DataType.isBaseType(obj.getClass()) ? obj : ConverterKit.duang().encode(obj);
+        } catch (Exception e) {
+            throw new DbException("toBson is fail: " + e.getMessage(), e);
+        }
+    }
 
 }

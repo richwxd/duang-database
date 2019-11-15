@@ -56,19 +56,10 @@ public class Query<T> {
         pageObj = new Page<T>(0, 1);
 
         // 默认查询审核通过的数据
-        if(isAddSuccessStatus) {
-            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
-        }
+//        if(isAddSuccessStatus) {
+//            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
+//        }
     }
-
-//    private Query(IDao<T> dao, Class<T> clazz, MongoDatabase db, MongoCollection collection, Map keys) {
-//        this();
-//        this.dao = dao;
-//        this.clazz = clazz;
-//        this.db = db;
-//        this.collection = collection;
-//        this.keys = keys;
-//    }
 
     private Query(IDao<T> dao) {
         this();
@@ -76,37 +67,13 @@ public class Query<T> {
     }
 
     public static class Builder<T> {
-//        private MongoDatabase db;
-//        private MongoCollection collection;
-//        private Class<?> clazz;
-//        private Map keys;
         private IDao<T> dao;
-
         public Builder() {}
-        /*
-        public Builder database(MongoDatabase db) {
-            this.db = db;
-            return this;
-        }
-        public Builder collection(MongoCollection collection) {
-            this.collection = collection;
-            return this;
-        }
-        public Builder entityClass(Class<?> clazz) {
-            this.clazz = clazz;
-            return this;
-        }
-        public Builder keys(Map<String,String> keyMap) {
-            this.keys = keyMap;
-            return this;
-        }
-        */
         public Builder dao(IDao<T> dao) {
             this.dao = dao;
             return this;
         }
         public Query builder() {
-//            return new Query(dao, clazz,db,collection,keys);
             return new Query(dao);
         }
     }
@@ -407,63 +374,11 @@ public class Query<T> {
     }
 
     private void checkSingle(DBObject orderDbo, Page<T> page) {
-
         if (ToolsKit.isNotEmpty(orderDbo) || page.getPageNo() != 0 || page.getPageSize() != 0) {
             logger.error("orderBy: " + orderDbo.toString() + "       pageNo: " + page.getPageNo() + "          pageSize: " + page.getPageSize());
             throw new DbException("findOne时, orderBy或pageNo或pageSize参数不能有值");
         }
     }
-    /*
-    public T result(){
-    	DBObject orderDbo = getDBOrder();
-    	PageDto<T> pageObj = getPageObj();
-    	try {
-    		checkSingle(orderDbo, pageObj);
-		} catch (Exception e) {
-			logger.onException(e.getMessage(), e);
-			return null;
-		}
-    	DBObject fieldsDbo = getDBFields();
-		DBObject resultDbo = null;
-		if(ToolsKit.isEmpty(getHint())){
-			List<DBObject> hintList = new ArrayList<DBObject>(1);
-			hintList.add(getHint());
-			coll.setHintFields(hintList);
-		}
-		if(ToolsKit.isEmpty(fieldsDbo)){
-			resultDbo = coll.findOne(queryObj, fieldsDbo);
-		}else{
-			resultDbo = coll.findOne(queryObj);
-		}
-
-		logger.debug("find: " + queryObj.toString());
-		return DecodeConvetor.convetor(clazz, resultDbo);
-    }
-
-	public List<T> results() {
-		DBCursor cursor = null;
-		DBObject fieldsDbo = getDBFields();
-
-		if (ToolsKit.isEmpty(fieldsDbo)) {
-			cursor = coll.find(queryObj, fieldsDbo);
-		} else {
-			cursor = coll.find(queryObj, keys);
-		}
-		DBObject orderDbo = getDBOrder();
-		if (ToolsKit.isEmpty(orderDbo)) {
-			cursor.sort(orderDbo);
-		}
-
-		PageDto<T> pageObj = getPageObj();
-		if (pageObj.getPageNo() > 0 && pageObj.getPageSize() > 1) {
-			cursor.skip((pageObj.getPageNo() - 1) * pageObj.getPageSize()).limit(pageObj.getPageSize());
-		}
-		if(ToolsKit.isEmpty(getHint())) cursor.hint(getHint());
-
-		logger.debug("find: " + cursor.toString());
-		return MongoKit.dBCursor2List(clazz, cursor);
-	}
-*/
 
     public T findOne() {
         return dao.findOne(this);

@@ -52,4 +52,9 @@ public interface IConnectOptions {
      */
     List<ServerNodeAddress> getServerAddressList();
 
+    /**最大执行时间*/
+    Long getMaxTime();
+
+    /**最大执行时间*/
+    Long getMaxAwaitTim();
 }

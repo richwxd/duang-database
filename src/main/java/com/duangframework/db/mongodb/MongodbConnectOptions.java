@@ -15,12 +15,13 @@ import java.util.List;
  */
 public class MongodbConnectOptions extends ConnectOptions {
 
+
     private MongodbConnectOptions() {
 
     }
 
-    private MongodbConnectOptions(String host, int port, String database, String username, String password) {
-        super(host, port, database, username, password);
+    private MongodbConnectOptions(String host, int port, String database, String username, String password, Long maxTimeMS, Long maxAwaitTimeMS) {
+        super(host, port, database, username, password, maxTimeMS, maxAwaitTimeMS);
     }
 
     private MongodbConnectOptions(String url) {
@@ -31,16 +32,21 @@ public class MongodbConnectOptions extends ConnectOptions {
     public static class Builder {
 
         private String host;
-        private int port;
+        private Integer port;
         private String database;
         private String username;
         private String password;
         private String url;
+        private Long maxTimeMS;
+        private Long maxAwaitTimeMS;
+
         private List<ServerNodeAddress> serverNodeAddressList = new ArrayList<>();
 
         public Builder() {
             this.host = "127.0.0.1";
             this.port = 27017;
+            maxTimeMS = 1000L;
+            maxAwaitTimeMS = 1000L;
         }
 
         public MongodbConnectOptions.Builder host(String host) {
@@ -78,8 +84,19 @@ public class MongodbConnectOptions extends ConnectOptions {
             return this;
         }
 
+        public MongodbConnectOptions.Builder getMaxTime(Long maxTimeMS) {
+            this.maxTimeMS = maxTimeMS;
+            return this;
+        }
+        public MongodbConnectOptions.Builder getMaxAwaitTim(Long maxAwaitTimeMS) {
+            this.maxAwaitTimeMS = maxAwaitTimeMS;
+            return this;
+        }
+
         public MongodbConnectOptions build() {
-            return ToolsKit.isEmpty(url) ? new MongodbConnectOptions(host, port, database, username, password) : new MongodbConnectOptions(url);
+            return ToolsKit.isEmpty(url) ?
+                    new MongodbConnectOptions(host, port, database, username, password, maxTimeMS, maxAwaitTimeMS) :
+                    new MongodbConnectOptions(url);
         }
 
     }

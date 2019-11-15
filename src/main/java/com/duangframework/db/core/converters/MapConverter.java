@@ -5,6 +5,7 @@ import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.DataType;
+import com.mongodb.DBObject;
 import org.bson.Document;
 
 import java.lang.reflect.Field;
@@ -36,8 +37,8 @@ public class MapConverter extends TypeConverter {
             Map<Object,Object> decodeMap = new LinkedHashMap(valueMap.size());
             for(Iterator<Map.Entry> iterator = valueMap.entrySet().iterator(); iterator.hasNext();){
                 Map.Entry entry = iterator.next();
-                Document document = (Document) entry.getValue();
-                Object resultObj =  ConverterKit.duang().decode(document, genericTypeClass);
+                DBObject dbObject = (DBObject) entry.getValue();
+                Object resultObj =  ConverterKit.duang().decode(dbObject.toMap(), genericTypeClass);
                 if (null != resultObj) {
                     decodeMap.put(entry.getKey(), resultObj);
                 }

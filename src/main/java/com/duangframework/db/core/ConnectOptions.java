@@ -19,6 +19,8 @@ public abstract class ConnectOptions implements IConnectOptions {
     protected String password;
     protected String url;
     protected List<ServerNodeAddress> serverNodeAddressList = new ArrayList<>();
+    protected Long maxTimeMS = 1000L;
+    protected Long maxAwaitTimeMS = 1000L;
 
     public ConnectOptions(){
 
@@ -29,12 +31,18 @@ public abstract class ConnectOptions implements IConnectOptions {
     }
 
     public ConnectOptions(String host, int port, String database, String username, String password) {
+        this(host, port, database, username, password, 1000L, 1000L);
+    }
+
+    public ConnectOptions(String host, Integer port, String database, String username, String password, Long maxTimeMS, Long maxAwaitTimeMS) {
         this.host = host;
         this.port = port;
         this.database = database;
         this.username = username;
         this.password = password;
         serverNodeAddressList.add(new ServerNodeAddress(host, port, "Main Database"));
+        this.maxTimeMS = maxTimeMS;
+        this.maxAwaitTimeMS = maxAwaitTimeMS;
     }
 
     public ConnectOptions(String url) {
@@ -79,6 +87,18 @@ public abstract class ConnectOptions implements IConnectOptions {
     public List<ServerNodeAddress> getServerAddressList() {
         return serverNodeAddressList;
     }
+
+    @Override
+    public Long getMaxTime() {
+        return maxTimeMS;
+    }
+
+    @Override
+    public Long getMaxAwaitTim() {
+        return maxAwaitTimeMS;
+    }
+
+
 
     @Override
     public String toString() {

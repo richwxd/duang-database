@@ -5,6 +5,8 @@ import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.DataType;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.bson.Document;
 
 import java.lang.reflect.Field;
@@ -37,8 +39,8 @@ public class CollectionConverter extends TypeConverter {
         } else {
             List<Object> decodeList = new ArrayList(valueList.size());
             for (Object objectItem : valueList) {
-                Document document = (Document)convertValueObj(objectItem);
-                Object resultObj = ConverterKit.duang().decode(document, genericTypeClass);
+                DBObject dbObject = (DBObject)convertValueObj(objectItem);
+                Object resultObj = ConverterKit.duang().decode(dbObject.toMap(), genericTypeClass);
                 decodeList.add(resultObj);
             }
             if(!decodeList.isEmpty()) {

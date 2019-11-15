@@ -3,6 +3,7 @@ package com.duangframework.db.core.converters;
 import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
+import com.mongodb.DBObject;
 import org.bson.Document;
 
 import java.lang.reflect.Field;
@@ -22,8 +23,8 @@ public class EntityConverter extends TypeConverter {
             return null;
         }
 
-        Document document = (Document)value;
-        Object decodeObj = ConverterKit.duang().decode(document, field.getType());
+        DBObject dbObject = (DBObject)value;
+        Object decodeObj = ConverterKit.duang().decode(dbObject.toMap(), field.getType());
         if(null != decodeObj) {
             return new Converter(field, getName(field), decodeObj);
         }

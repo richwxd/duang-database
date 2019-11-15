@@ -15,14 +15,14 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         MongodbClient mongodbClient = new MongodbClient(new MongodbConnectOptions.Builder()
-//                .dataBase("openAGV")
-//                .host("172.20.10.6")
-//                .port(27017)
-//                .userName("admin")
-//                .passWord("1b88ab6d")
-                .dataBase("test")
-                .host("42.96.139.238")
-                .port(14823)
+                .dataBase("openAGV")
+                .host("192.168.8.184")
+                .port(27017)
+                .userName("admin")
+                .passWord("1b88ab6d")
+//                .dataBase("test")
+//                .host("42.96.139.238")
+//                .port(14823)
                 .build());
         try {
 //            MongoClient client = mongodbClient.getClient();
