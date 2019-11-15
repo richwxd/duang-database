@@ -100,19 +100,23 @@ public final class ConverterKit {
      * @return
      * @throws DbException
      */
-    public <T> T decode(Map<String, Object> dbObject, Class<?> entityClass) throws Exception {
+    public <T> T decode(Map<String, Object> dbObject, Class<?> entityClass) throws DbException {
         if(ToolsKit.isEmpty(dbObject)) {
             throw new DbException("db result converter entity is fail: " + entityClass.getSimpleName() + " is null!");
         }
         Field[] fields = ClassKit.getFields(entityClass);
         Object entityObject = ObjectKit.newInstance(entityClass);
-        for(Field field : fields) {
-            TypeConverter typeConverter = getTypeConverter(field);
-            Converter c = typeConverter.decode(field, dbObject.get(ToolsKit.getFieldName(field)));
-            if(null != c) {
-                field.setAccessible(true);
-                field.set(entityObject, c.getValue());
+        try {
+            for (Field field : fields) {
+                TypeConverter typeConverter = getTypeConverter(field);
+                Converter c = typeConverter.decode(field, dbObject.get(ToolsKit.getFieldName(field)));
+                if (null != c) {
+                    field.setAccessible(true);
+                    field.set(entityObject, c.getValue());
+                }
             }
+        } catch (Exception e) {
+            throw new DbException(e.getMessage(), e);
         }
         return (T)entityObject;
     }

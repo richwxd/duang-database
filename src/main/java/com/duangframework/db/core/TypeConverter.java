@@ -181,7 +181,7 @@ public abstract class TypeConverter implements IDataConverter {
      * @param valueObj 值对象
      * @return
      */
-    public abstract Converter decode(Field field, Object value) throws Exception;
+    public abstract Converter decode(Field field, Object value) throws DbException;
 
     /**
      *  编码

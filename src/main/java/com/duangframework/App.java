@@ -15,14 +15,14 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         MongodbClient mongodbClient = new MongodbClient(new MongodbConnectOptions.Builder()
-                .dataBase("openAGV")
-                .host("172.20.10.6")
-                .port(27017)
-//                .dataBase("test")
-//                .host("42.96.139.238")
-//                .port(14823)
-                .userName("admin")
-                .passWord("1b88ab6d")
+//                .dataBase("openAGV")
+//                .host("172.20.10.6")
+//                .port(27017)
+//                .userName("admin")
+//                .passWord("1b88ab6d")
+                .dataBase("test")
+                .host("42.96.139.238")
+                .port(14823)
                 .build());
         try {
 //            MongoClient client = mongodbClient.getClient();
@@ -88,9 +88,13 @@ public class App {
             MongoDao<Logs> logsDao = new MongoDao<>(mongodbClient.getClientId(), Logs.class);
             logsDao.save(entity);
 
-            Query query = new Query();
-            query.eq(Logs.REQUEST_ID, requestId);
-            Logs logs = logsDao.findOne(query);
+//            Query query = new Query();
+//            query.eq(Logs.REQUEST_ID, requestId);
+//                        Logs logs = logsDao.findOne(query);
+
+            Logs logs = logsDao.query().eq(Logs.REQUEST_ID, requestId).findOne();
+//            logsDao.query(query).update(udpate).execute();
+
             System.out.println(logs.toString());
             System.out.println(logs.getIntegerArray()[0]);
 

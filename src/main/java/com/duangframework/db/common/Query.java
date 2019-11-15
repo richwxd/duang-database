@@ -2,7 +2,9 @@ package com.duangframework.db.common;
 
 
 import com.duangframework.db.core.DbException;
+import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
+import com.duangframework.db.mongodb.MongoDao;
 import com.duangframework.db.mongodb.Operator;
 import com.duangframework.db.utils.DataType;
 import com.duangframework.db.utils.MongoUtils;
@@ -10,6 +12,9 @@ import com.duangframework.db.utils.ToolsKit;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +35,14 @@ public class Query<T> {
     private Order orderObj;
     private Field fieldObj;
     private Page<T> pageObj;
-
-    private DBCollection coll;
-    private Class<T> clazz;
-    private Map keys;
     private Map hintObj;
+
+//    private MongoDatabase db;
+//    private MongoCollection collection;
+//    private Class<T> clazz;
+//    private Map keys;
+    private IDao<T> dao;
+
 
     public Query() {
         this(true);
@@ -53,11 +61,54 @@ public class Query<T> {
         }
     }
 
-    public Query(DBCollection coll, Class<T> clazz, LinkedHashMap keys) {
+//    private Query(IDao<T> dao, Class<T> clazz, MongoDatabase db, MongoCollection collection, Map keys) {
+//        this();
+//        this.dao = dao;
+//        this.clazz = clazz;
+//        this.db = db;
+//        this.collection = collection;
+//        this.keys = keys;
+//    }
+
+    private Query(IDao<T> dao) {
         this();
-        this.coll = coll;
-        this.clazz = clazz;
-        this.keys = keys;
+        this.dao = dao;
+    }
+
+    public static class Builder<T> {
+//        private MongoDatabase db;
+//        private MongoCollection collection;
+//        private Class<?> clazz;
+//        private Map keys;
+        private IDao<T> dao;
+
+        public Builder() {}
+        /*
+        public Builder database(MongoDatabase db) {
+            this.db = db;
+            return this;
+        }
+        public Builder collection(MongoCollection collection) {
+            this.collection = collection;
+            return this;
+        }
+        public Builder entityClass(Class<?> clazz) {
+            this.clazz = clazz;
+            return this;
+        }
+        public Builder keys(Map<String,String> keyMap) {
+            this.keys = keyMap;
+            return this;
+        }
+        */
+        public Builder dao(IDao<T> dao) {
+            this.dao = dao;
+            return this;
+        }
+        public Query builder() {
+//            return new Query(dao, clazz,db,collection,keys);
+            return new Query(dao);
+        }
     }
 
     /**
@@ -413,5 +464,13 @@ public class Query<T> {
 		return MongoKit.dBCursor2List(clazz, cursor);
 	}
 */
+
+    public T findOne() {
+        return dao.findOne(this);
+    }
+
+    public List<T> findList() {
+        return dao.findList(this);
+    }
 }
 
