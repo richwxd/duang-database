@@ -9,6 +9,9 @@ import com.duangframework.db.core.IConnectOptions;
 import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
 import com.duangframework.db.utils.ToolsKit;
+import com.duangframework.db.vtor.common.ValidatorException;
+import com.duangframework.db.vtor.core.VtorFactory;
+import com.duangframework.db.vtor.utils.VtorKit;
 import com.mongodb.*;
 import org.bson.types.ObjectId;
 
@@ -57,6 +60,15 @@ public class MongoDao<T> implements IDao<T> {
 
     @Override
     public T save(T entity) throws DbException {
+
+        // 保存入库前，先进行参数验证
+        try {
+            entity = VtorKit.validate(entity);
+        } catch (ValidatorException ve) {
+            throw new DbException("该操作失败，实体类参数验证不通过: " + ve.getMessage(), ve);
+        }
+
+        // 验证通过后再保存到数据库
         IdEntity idEntity = (IdEntity)entity;
         if(ToolsKit.isEmpty(idEntity.getId())){
             idEntity.setId(null);
@@ -116,7 +128,13 @@ public class MongoDao<T> implements IDao<T> {
 
     @Override
     public boolean update(Query<T> query, Update<T> update) {
-        return false;
+        DBObject queryDbo = new BasicDBObject(query.getQuery());
+        DBObject updateDbo = new BasicDBObject(update.getUpdate());
+        if(ToolsKit.isEmpty(queryDbo) || ToolsKit.isEmpty(updateDbo)) {
+            throw new DbException("Mongodb Update is Fail: queryDbo or updateDbo is null");
+        }
+        WriteResult writeResult = dbCollection.update(queryDbo, updateDbo, new UpdateOptions().getOptions());
+        return writeResult.getN() > 0 ? true : false;
     }
 
     /**

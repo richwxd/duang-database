@@ -2,6 +2,8 @@ package com.duangframework;
 
 import com.duangframework.db.DbClientFatory;
 import com.duangframework.db.common.Query;
+import com.duangframework.db.common.Update;
+import com.duangframework.db.entity.IdEntity;
 import com.duangframework.db.entity.Logs;
 import com.duangframework.db.enums.EnvEnum;
 import com.duangframework.db.mongodb.MongoDao;
@@ -21,7 +23,7 @@ public class App {
                 .port(27017)
                 .userName("admin")
                 .passWord("1b88ab6d")
-                .env(EnvEnum.DEV)
+                .env(EnvEnum.PRO)
 //                .dataBase("test")
 //                .host("42.96.139.238")
 //                .port(14823)
@@ -87,6 +89,8 @@ public class App {
             integerArray[1] = 2;
             entity.setIntegerArray(integerArray);
 
+            entity.setStatus(IdEntity.STATUS_FIELD_SUCCESS);
+
             MongoDao<Logs> logsDao = new MongoDao<>(mongodbClient.getClientId(), Logs.class);
             logsDao.save(entity);
 
@@ -98,7 +102,21 @@ public class App {
 //            logsDao.query(query).update(udpate).execute();
 
             System.out.println(logs.toString());
+            System.out.println(logs.getRequestId());
             System.out.println(logs.getIntegerArray()[0]);
+
+
+            Update<Logs> update = new Update<>();
+            update.set(Logs.REQUEST_ID, UUID.randomUUID().toString());
+            System.out.println(update.getUpdate());
+
+            Query<Logs> query =new Query();
+            query.eq(IdEntity.ID_FIELD, logs.getId());
+//            query.eq(Logs.REQUEST_ID, requestId);
+            System.out.println(query.getQuery());
+
+            boolean isUpdate = logsDao.update(query,update);
+            System.out.println("##############:" + isUpdate);
 
 //            List<String> dbList = client.getDatabaseNames();
 //            System.out.println("dbList:   " + dbList);
