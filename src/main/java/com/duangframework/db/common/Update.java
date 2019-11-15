@@ -20,10 +20,6 @@ public class Update<T> {
 
     private IDao<T> dao;
     private Map updateObj;
-    private DBCollection dbCollection;
-    private Class<T> clazz;
-    private Query<T> query;
-
 
     public Update() {
         updateObj = new LinkedHashMap();

@@ -1,5 +1,7 @@
 package com.duangframework.db.core;
 
+import com.duangframework.db.enums.EnvEnum;
+
 import java.util.List;
 
 /**
@@ -57,4 +59,6 @@ public interface IConnectOptions {
 
     /**最大执行时间*/
     Long getMaxAwaitTim();
+
+    EnvEnum getEnv();
 }

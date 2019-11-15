@@ -8,7 +8,6 @@ public interface IClient<T> {
      */
     String getClientId();
 
-
     /**
      * 取客户端链接信息对象
      * @return

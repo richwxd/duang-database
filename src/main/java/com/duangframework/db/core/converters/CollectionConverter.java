@@ -5,9 +5,7 @@ import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.TypeConverter;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.DataType;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import org.bson.Document;
 
 import java.lang.reflect.Field;
 import java.util.*;

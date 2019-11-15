@@ -3,6 +3,7 @@ package com.duangframework;
 import com.duangframework.db.DbClientFatory;
 import com.duangframework.db.common.Query;
 import com.duangframework.db.entity.Logs;
+import com.duangframework.db.enums.EnvEnum;
 import com.duangframework.db.mongodb.MongoDao;
 import com.duangframework.db.mongodb.MongodbClient;
 import com.duangframework.db.mongodb.MongodbConnectOptions;
@@ -20,6 +21,7 @@ public class App {
                 .port(27017)
                 .userName("admin")
                 .passWord("1b88ab6d")
+                .env(EnvEnum.DEV)
 //                .dataBase("test")
 //                .host("42.96.139.238")
 //                .port(14823)

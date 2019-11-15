@@ -24,9 +24,6 @@ public class MongoDao<T> implements IDao<T> {
     private Class<T> entityClass;
     private IConnectOptions connectOptions;
 
-//    private MongoDatabase database;
-//    private MongoCollection<Document> collection;
-
     private DB db;
     private DBCollection dbCollection;
     protected DBObject collectionKey;
@@ -163,6 +160,7 @@ public class MongoDao<T> implements IDao<T> {
     public Query<T> query() {
         return new Query.Builder()
                 .dao(this)
+                .env(connectOptions.getEnv())
                 .builder();
     }
 

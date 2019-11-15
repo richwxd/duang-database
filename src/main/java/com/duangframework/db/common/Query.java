@@ -4,6 +4,7 @@ package com.duangframework.db.common;
 import com.duangframework.db.core.DbException;
 import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
+import com.duangframework.db.enums.EnvEnum;
 import com.duangframework.db.mongodb.MongoDao;
 import com.duangframework.db.mongodb.Operator;
 import com.duangframework.db.utils.DataType;
@@ -36,11 +37,6 @@ public class Query<T> {
     private Field fieldObj;
     private Page<T> pageObj;
     private Map hintObj;
-
-//    private MongoDatabase db;
-//    private MongoCollection collection;
-//    private Class<T> clazz;
-//    private Map keys;
     private IDao<T> dao;
 
 
@@ -55,26 +51,31 @@ public class Query<T> {
         hintObj = new LinkedHashMap();
         pageObj = new Page<T>(0, 1);
 
-        // 默认查询审核通过的数据
-//        if(isAddSuccessStatus) {
-//            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
-//        }
+         // 默认查询审核通过的数据
+        if(isAddSuccessStatus) {
+            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
+        }
     }
 
-    private Query(IDao<T> dao) {
-        this();
+    private Query(IDao<T> dao, EnvEnum envEnum) {
+        this(EnvEnum.PRO.equals(envEnum));
         this.dao = dao;
     }
 
     public static class Builder<T> {
         private IDao<T> dao;
+        private EnvEnum envEnum;
         public Builder() {}
         public Builder dao(IDao<T> dao) {
             this.dao = dao;
             return this;
         }
+        public Builder env(EnvEnum env) {
+            this.envEnum = env;
+            return this;
+        }
         public Query builder() {
-            return new Query(dao);
+            return new Query(dao, envEnum);
         }
     }
 

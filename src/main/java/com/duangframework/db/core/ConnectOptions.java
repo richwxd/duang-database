@@ -1,5 +1,7 @@
 package com.duangframework.db.core;
 
+import com.duangframework.db.enums.EnvEnum;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public abstract class ConnectOptions implements IConnectOptions {
     protected List<ServerNodeAddress> serverNodeAddressList = new ArrayList<>();
     protected Long maxTimeMS = 1000L;
     protected Long maxAwaitTimeMS = 1000L;
+    protected EnvEnum envEnum;
 
     public ConnectOptions(){
 
@@ -31,10 +34,11 @@ public abstract class ConnectOptions implements IConnectOptions {
     }
 
     public ConnectOptions(String host, int port, String database, String username, String password) {
-        this(host, port, database, username, password, 1000L, 1000L);
+        this(host, port, database, username, password, 1000L, 1000L, EnvEnum.DEV);
     }
 
-    public ConnectOptions(String host, Integer port, String database, String username, String password, Long maxTimeMS, Long maxAwaitTimeMS) {
+    public ConnectOptions(String host, Integer port, String database, String username, String password,
+                          Long maxTimeMS, Long maxAwaitTimeMS, EnvEnum envEnum) {
         this.host = host;
         this.port = port;
         this.database = database;
@@ -43,6 +47,7 @@ public abstract class ConnectOptions implements IConnectOptions {
         serverNodeAddressList.add(new ServerNodeAddress(host, port, "Main Database"));
         this.maxTimeMS = maxTimeMS;
         this.maxAwaitTimeMS = maxAwaitTimeMS;
+        this.envEnum = envEnum;
     }
 
     public ConnectOptions(String url) {
@@ -98,7 +103,10 @@ public abstract class ConnectOptions implements IConnectOptions {
         return maxAwaitTimeMS;
     }
 
-
+    @Override
+    public EnvEnum getEnv() {
+        return envEnum;
+    }
 
     @Override
     public String toString() {
