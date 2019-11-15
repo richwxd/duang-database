@@ -48,9 +48,9 @@ public class Query<T> {
         pageObj = new Page<T>(0, 1);
 
         // 默认查询审核通过的数据
-//        if(isAddSuccessStatus) {
-//            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
-//        }
+        if(isAddSuccessStatus) {
+            queryObj.put(IdEntity.STATUS_FIELD, IdEntity.STATUS_FIELD_SUCCESS);
+        }
     }
 
     public Query(DBCollection coll, Class<T> clazz, LinkedHashMap keys) {
