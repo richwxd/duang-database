@@ -1,6 +1,7 @@
 package com.duangframework.db.mongodb;
 
 import com.duangframework.db.DbClientFatory;
+import com.duangframework.db.common.Page;
 import com.duangframework.db.common.Query;
 import com.duangframework.db.common.Update;
 import com.duangframework.db.core.DbException;
@@ -94,7 +95,7 @@ public class MongoDao<T> implements IDao<T> {
         try {
             DBObject dbObject = new BasicDBObject(encodeMap);
             if(ToolsKit.isEmpty(id)) {
-                dbCollection.insert(dbObject);
+                dbCollection.save(dbObject, new InsertOptions().getWriteConcern());
                 entity.setId(dbObject.get(IdEntity.ID_FIELD).toString());
             } else {
                 update(id, dbObject);
@@ -112,7 +113,7 @@ public class MongoDao<T> implements IDao<T> {
      * @param dbObject  记录对象
      * @return 更新成功返回true
      */
-    public boolean update(String id, DBObject dbObject) {
+    public boolean update(String id, DBObject dbObject) throws DbException {
 
         if (!ObjectId.isValid(id)){
             throw new DbException("id is not ObjectId!");
@@ -164,14 +165,74 @@ public class MongoDao<T> implements IDao<T> {
         if(null == query) {
             throw new DbException("Mongodb findList is Fail: query is null");
         }
-        DBObject queryDoc = new BasicDBObject(query.getQuery());
-        DBCursor dbCursor = dbCollection.find(queryDoc, new FindOptions(query, connectOptions).getOptions());
+        DBObject queryDbo = new BasicDBObject(query.getQuery());
+        DBCursor dbCursor = dbCollection.find(queryDbo, new FindOptions(query, connectOptions).getOptions());
         final List<T> resultList = new ArrayList();
         while (dbCursor.hasNext()) {
             DBObject dbObject = dbCursor.next();
             resultList.add((T) ConverterKit.duang().decode(dbObject.toMap(), entityClass));
         }
         return resultList;
+    }
+
+    /**
+     * 分页查找记录，按Page对象返回
+     * @param query		查询条件
+     * @return	分页对象
+     * @throws Exception
+     */
+    @Override
+    public Page<T> findPage(Query query) throws DbException {
+        if(ToolsKit.isEmpty(query)) {
+            throw new DbException("Mongodb findPage is Fail: query is null");
+        }
+        Page<T> page = query.getPage();
+        List<T> list = findList(query);
+        if(ToolsKit.isEmpty(list)) {
+            return null;
+        }
+        page.setResult(list);
+        if(page.isAutoCount()) {
+            page.setTotalCount(count(query));
+        }
+        return page;
+    }
+
+    /**
+     * 根据查询条件进行汇总
+     * @param query		查询条件
+     * @return  记录数
+     */
+    @Override
+    public long count(Query query) throws DbException {
+        DBObject queryDbo = new BasicDBObject(query.getQuery());
+        return dbCollection.count(queryDbo, new CountOptions(query, connectOptions).getOptions());
+    }
+
+    /**
+     * 新增记录时，必须要保证有ID值
+     * 即由外部指定ObjectId值再新增
+     * @param entity
+     * @return 新增时是否成功
+     * @throws Exception
+     */
+    @Override
+    public boolean insert(T entity) throws DbException {
+        IdEntity idEntity = (IdEntity)entity;
+        if(ToolsKit.isEmpty(idEntity.getId())) {
+            throw new DbException("document is fail: id is null");
+        }
+        Map<String,Object> map = ConverterKit.duang().encode(idEntity);
+        if(ToolsKit.isEmpty(map)) {
+            throw new DbException("encode entity to map is fail: map is null");
+        }
+        try {
+            DBObject insertDbo = new BasicDBObject(map);
+            dbCollection.insert(insertDbo, new InsertOptions().getWriteConcern());
+            return true;
+        } catch (Exception e) {
+            throw new DbException(e.getMessage(), e);
+        }
     }
 
     public Query<T> query() {

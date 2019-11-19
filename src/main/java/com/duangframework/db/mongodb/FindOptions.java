@@ -32,14 +32,14 @@ public class FindOptions<T> {
     }
 
     private void duang(Query<T> query) {
-        Page<T> page = query.getPageObj();
+        Page<T> page = query.getPage();
         //查询返回字段
         BasicDBObject fieldDbo = (BasicDBObject) MongoUtils.convert2DBFields(query.getFields());
         if(ToolsKit.isNotEmpty(fieldDbo) && !fieldDbo.isEmpty()) {
             options.projection(fieldDbo);
         }
         // 排序
-        BasicDBObject orderDbo =  (BasicDBObject)MongoUtils.convert2DBOrder(query.getOrderObj());
+        BasicDBObject orderDbo =  (BasicDBObject)MongoUtils.convert2DBOrder(query.getOrder());
         if(ToolsKit.isNotEmpty(orderDbo) && !orderDbo.isEmpty()) {
             options.sort(orderDbo);
         }

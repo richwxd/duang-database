@@ -356,7 +356,7 @@ public class Query<T> {
         return queryObj;
     }
 
-    public Map getOrderObj() {
+    public Map getOrder() {
         logger.debug(" orderObj: " + orderObj.toString());
         return orderObj.getOrderMap();
     }
@@ -366,7 +366,7 @@ public class Query<T> {
         return fieldObj.getFields();
     }
 
-    public Page<T> getPageObj() {
+    public Page<T> getPage() {
         return pageObj;
     }
 
