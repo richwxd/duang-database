@@ -73,7 +73,7 @@ public class App {
 
             Logs logs123 = new Logs();
             logs123.setId(new DuangId().toString());
-            logs123.setRequestId(new DuangId().toHexString());
+            logs123.setRequestId(UUID.randomUUID().toString());
             logs123.setCmd("getmag");
             logs123.setCreateTime(new Date());
             logs123.setUpdateTime(new Date());

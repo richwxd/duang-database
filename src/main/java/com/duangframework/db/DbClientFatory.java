@@ -44,8 +44,12 @@ public class DbClientFatory {
      * @return
      */
     public <T> T getClient() {
-        java.util.Objects.requireNonNull(clientId, "客户端ID不能为空");
-        return (T)CLIENT_MAP.get(clientId);
+        if(CLIENT_MAP.size() > 1) {
+            java.util.Objects.requireNonNull(clientId, "客户端ID不能为空");
+            return (T)CLIENT_MAP.get(clientId);
+        } else {
+            return (T)CLIENT_MAP.entrySet().iterator().next().getValue();
+        }
     }
 
 }

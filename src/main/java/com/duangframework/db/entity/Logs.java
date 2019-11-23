@@ -2,6 +2,7 @@ package com.duangframework.db.entity;
 
 import com.duangframework.db.annotation.Entity;
 import com.duangframework.db.annotation.Param;
+import com.duangframework.db.vtor.annotation.DuangId;
 import sun.rmi.runtime.Log;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class Logs extends BaseEntity {
     public static final String REQUEST_ID = "requestId";
 
 
+    @DuangId
     @Param(label = "请求ID")
     private String requestId;
 
