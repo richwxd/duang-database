@@ -51,4 +51,6 @@ public @interface Param {
 
     String sort() default "str";
 
+    String valign() default "middle";
+
 }
