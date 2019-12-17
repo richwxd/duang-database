@@ -1,6 +1,5 @@
 package com.duangframework.db.core;
 
-import com.duangframework.db.annotation.Bean;
 import com.duangframework.db.core.converters.*;
 import com.duangframework.db.utils.ClassKit;
 import com.duangframework.db.utils.DataType;
