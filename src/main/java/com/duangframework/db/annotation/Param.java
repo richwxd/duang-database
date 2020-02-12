@@ -42,12 +42,15 @@ public @interface Param {
     // 是否隐藏，默认为否 例如: <input  hidden="none" />
     boolean isHidden() default false;
 
-    // HTML页面用
-    String width() default "";
 
-    String align() default "";
+    /******************************** dhtmlx***************************************/
+    // 列宽，px作单位
+    String width() default "100";
 
-    String valign() default "";
+    String align() default "left";
 
-    String sort() default "";
+    String sort() default "str";
+
+    String valign() default "middle";
+
 }

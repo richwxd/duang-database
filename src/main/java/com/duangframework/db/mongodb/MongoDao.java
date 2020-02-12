@@ -31,17 +31,20 @@ public class MongoDao<T> implements IDao<T> {
     private DBCollection dbCollection;
     protected DBObject collectionKey;
 
+    public MongoDao() {
+
+    }
+
     public MongoDao(String clientId, Class<T> entityClass) {
         this.entityClass =entityClass;
         duang(clientId);
     }
 
     private void duang(String clientId) {
-        if(ToolsKit.isEmpty(clientId)) {
-            throw new DbException("clientId不能为空");
-        }
+        MongodbDbClient mongoClient  = ToolsKit.isEmpty(clientId) ?
+                    DbClientFatory.duang().getDefaultClient() :
+                    DbClientFatory.duang().id(clientId).getClient();
 
-        MongodbDbClient mongoClient = DbClientFatory.duang().id(clientId).getClient();
         if(ToolsKit.isEmpty(mongoClient)) {
             throw new DbException("根据["+clientId+"]取MongoClient时，MongoClient为空，请检查！");
         }

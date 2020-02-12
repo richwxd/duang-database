@@ -11,6 +11,17 @@
   <name>duang-db</name>
   <url>http://www.duangframework.com</url>
 
+  <distributionManagement>
+    <repository>
+      <id>admin</id>
+      <url>http://192.168.100.100:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>admin</id>
+      <url>http://192.168.100.100:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
