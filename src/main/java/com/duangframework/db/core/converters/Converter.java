@@ -39,7 +39,7 @@ public class Converter {
 
     private void setValue(Object value) {
         if(!ToolsKit.isAllowNull() && ToolsKit.isEmpty(value)) {
-            throw new DbException("值不允许为null，如需更改，请更改配置文件[allow.save.null]");
+            throw new DbException("字段名["+key + "]的值不允许为null或空字符串，如需更改，请更改配置文件[allow.save.null]");
         }
         this.value = value;
     }
