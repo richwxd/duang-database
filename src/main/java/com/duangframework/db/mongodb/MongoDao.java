@@ -41,9 +41,9 @@ public class MongoDao<T> implements IDao<T> {
     }
 
     private void duang(String clientId) {
-        MongodbDbClient mongoClient  = ToolsKit.isEmpty(clientId) ?
-                    DbClientFatory.duang().getDefaultClient() :
-                    DbClientFatory.duang().id(clientId).getClient();
+        MongodbDbClient mongoClient = ToolsKit.isEmpty(clientId) ?
+                DbClientFatory.duang().getDefaultClient() :
+                DbClientFatory.duang().id(clientId).getClient();
 
         if(ToolsKit.isEmpty(mongoClient)) {
             throw new DbException("根据["+clientId+"]取MongoClient时，MongoClient为空，请检查！");

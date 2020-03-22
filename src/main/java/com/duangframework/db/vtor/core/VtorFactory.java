@@ -139,11 +139,11 @@ public final class VtorFactory {
      * @throws ValidatorException
      */
     public void validator(Object bean) throws ValidatorException {
-    	if(ToolsKit.isEmpty(bean)) {
-    		logger.info("要检验的bean对象为空，退出检验");
-    		return;
-		}
-		String beanName = bean.getClass().getName();
+        if (ToolsKit.isEmpty(bean)) {
+            logger.info("要检验的bean对象为空，退出检验");
+            return;
+        }
+        String beanName = bean.getClass().getName();
         Field[] fields = ENTITY_FIELD_MAP.get(beanName);
         if( null == fields){
             fields = bean.getClass().getDeclaredFields();
@@ -167,13 +167,12 @@ public final class VtorFactory {
 				Map map = (Map)ObjectKit.getFieldValue(bean, field);
 				validator(map);
 				isValidatorBean = true;
-			}
-			else if (DataType.isBeanType(typeClass)) {
-				Object entityObj = ObjectKit.getFieldValue(bean, field);
-				validator(entityObj);
-			}else {
-				Annotation[] annotationArray = field.getAnnotations();
-				if (ToolsKit.isEmpty(annotationArray)) {
+            } else if (DataType.isBeanType(typeClass)) {
+                Object entityObj = ObjectKit.getFieldValue(bean, field);
+                validator(entityObj);
+            } else {
+                Annotation[] annotationArray = field.getAnnotations();
+                if (ToolsKit.isEmpty(annotationArray)) {
 					continue;
 				}
 				for (Annotation annotation : annotationArray) {
@@ -210,9 +209,9 @@ public final class VtorFactory {
 			Annotation[] annotations = field.getAnnotations();
 			if(null != annotations && (annotations.length > 0)) {
 				for (Annotation annotation : annotations) {
-					if(VALIDATOR_HANDLE_MAP.containsKey(annotation.annotationType())) {
-						ENTITY_SET.add(beanName);
-						return true;
+                    if (VALIDATOR_HANDLE_MAP.containsKey(annotation.annotationType())) {
+                        ENTITY_SET.add(beanName);
+                        return true;
 					}
 				}
 			}

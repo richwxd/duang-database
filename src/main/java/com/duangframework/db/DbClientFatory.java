@@ -46,16 +46,16 @@ public class DbClientFatory {
      * @return
      */
     public <T> T getClient() {
-        if(CLIENT_MAP.size() > 1) {
+        if (CLIENT_MAP.size() > 1) {
             java.util.Objects.requireNonNull(clientId, "客户端ID不能为空");
-            return (T)CLIENT_MAP.get(clientId);
+            return (T) CLIENT_MAP.get(clientId);
         } else {
             return getDefaultClient();
         }
     }
 
     public <T> T getDefaultClient() {
-        return (T)CLIENT_MAP.entrySet().iterator().next().getValue();
+        return (T) CLIENT_MAP.entrySet().iterator().next().getValue();
     }
 
     public void setDao(Class clazz, Object dao) {
@@ -63,6 +63,6 @@ public class DbClientFatory {
     }
 
     public <T> T getDao(Class clazz) {
-        return (T)DAO_MAP.get(clazz);
+        return (T) DAO_MAP.get(clazz);
     }
 }
