@@ -171,7 +171,7 @@ public abstract class TypeConverter implements IDataConverter {
             final Class<?> type = fieldType.isArray() ? fieldType.getComponentType() : fieldType;
             return new Converter(field, getName(field), convertToArray(type, (List<?>) value));
         }
-        return null;
+        return  new Converter(field, getName(field), value);
     }
 
 

@@ -5,8 +5,9 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -61,6 +62,25 @@ public final class ClassKit {
             parent = parent.getSuperclass();
         }
         return fieldList.toArray(new Field[fieldList.size()]);
+    }
+
+    /**
+     * 根据class对象反射出所有属性字段，静态字段除外
+     * @param cls
+     * @return  Map集合，key为field.getName()
+     */
+    public static Map<String, Field> getFieldMap(Class<?> cls) {
+        Field[] fileds = getFields(cls);
+        if(null == fileds) {
+            return null;
+        }
+        Map<String, Field> map = new HashMap<>(fileds.length);
+        for(Field field : fileds) {
+            if(null != field) {
+                map.put(field.getName(), field);
+            }
+        }
+        return map;
     }
 
     /**
