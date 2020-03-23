@@ -9,19 +9,24 @@ import com.duangframework.db.core.ConverterKit;
 import com.duangframework.db.core.IConnectOptions;
 import com.duangframework.db.core.IDao;
 import com.duangframework.db.entity.IdEntity;
+import com.duangframework.db.utils.MongoIndexUtils;
 import com.duangframework.db.utils.ToolsKit;
 import com.duangframework.db.vtor.common.ValidatorException;
 import com.duangframework.db.vtor.utils.VtorKit;
 import com.mongodb.*;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 /**
- * Mongodb Dao对象，提供可操作的方法
+ * Mongodb 6y Dao对象，提供可操作的方法
  * @param <T>
  */
 public class MongoDao<T> implements IDao<T> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MongoDao.class);
 
     private MongoClient client;
     private Class<T> entityClass;
@@ -53,11 +58,11 @@ public class MongoDao<T> implements IDao<T> {
 
         db = client.getDB(connectOptions.getDataBase());
         dbCollection = db.getCollection(ToolsKit.getEntityName(entityClass));
-
-//        database = client.getDatabase(connectOptions.getDataBase());
-//        collection = database.getCollection(ToolsKit.getEntityName(entityClass));
-
-//        collectionKey = MongoUtils.convert2DBFields(ToolsKit.getFields(entityClass));
+        try {
+            MongoIndexUtils.createIndex(dbCollection, entityClass);
+        } catch (Exception e) {
+            LOG.error("创建[{}]索引时出错: {}", ToolsKit.getEntityName(entityClass), e.getMessage(), e);
+        }
     }
 
 
