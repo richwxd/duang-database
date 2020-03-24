@@ -1,8 +1,6 @@
 package com.duangframework.db.utils;
 
 import com.duangframework.db.annotation.Index;
-import com.duangframework.db.entity.BaseEntity;
-import com.duangframework.db.entity.IdEntity;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -81,18 +79,7 @@ public class MongoIndexUtils {
 
     private static boolean isVoField(Field field) {
 //        fields[i].isAnnotationPresent(Vo.class);
-        boolean isVoField = BaseEntity.class.equals(field.getType().getSuperclass()) ||
-                IdEntity.class.equals(field.getType().getSuperclass());
-        if (!isVoField) {
-            Class[] interfacesArray = field.getType().getInterfaces();
-            if (null != interfacesArray) {
-                for (Class interfaceClass : interfacesArray) {
-                    isVoField = java.io.Serializable.class.equals(interfaceClass);
-                    break;
-                }
-            }
-        }
-        return isVoField;
+        return DataType.isBeanType(field.getType());
     }
 
     private static boolean isVoCollField(Field field) {
