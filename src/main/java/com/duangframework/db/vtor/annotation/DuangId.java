@@ -2,12 +2,14 @@ package com.duangframework.db.vtor.annotation;
 
 import java.lang.annotation.*;
 
+import static java.lang.annotation.ElementType.*;
+
 /**
  * 是否DuangId验证(与MongoDB ObjectId一致)
  * @author Created by laotang
  * @date createed in 2018/6/30.
  */
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DuangId {

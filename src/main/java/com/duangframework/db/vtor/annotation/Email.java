@@ -4,12 +4,14 @@ import com.duangframework.db.vtor.common.PatternKit;
 
 import java.lang.annotation.*;
 
+import static java.lang.annotation.ElementType.*;
+
 /**
  * 邮箱地址验证注解
  * @author Created by laotang
  * @date createed in 2018/6/30.
  */
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Email {
