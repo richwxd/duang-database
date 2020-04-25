@@ -81,9 +81,9 @@ public class IdEntity implements java.io.Serializable {
         this.id = id;
     }
 
-    public void setId(int id) {
-        this.id = id+"";
-    }
+//    public void setId(int id) {
+//        this.id = id+"";
+//    }
 
     public Date getCreateTime() {
         return createTime;
